@@ -17,3 +17,6 @@ mono_crash.*.json
 # emacs auto save files
 *~*
 *\#*
+
+# Temporary Engine Files
+*.tmp
