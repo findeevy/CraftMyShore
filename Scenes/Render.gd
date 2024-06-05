@@ -44,7 +44,7 @@ func _on_game_board_render():
 	notify_runtime_tile_data_update(lr)
 	if offset == 0:
 		clear_layer(3)
-		set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(0, 9))
+		set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(1, 0))
 		notify_runtime_tile_data_update(3)
 	
 func _on_game_board_render_background():
@@ -58,7 +58,19 @@ func _on_game_board_render_background():
 				c+=1
 			r+=1
 		for c in Controller.tick_array.size():
-			set_cell(0, Vector2i(c, r), 0, Vector2i(0, abs(Controller.tick_array[c]) + 10))
+			set_cell(0, Vector2i(c, r), 0, Vector2i(1, abs(Controller.tick_array[c]) + 1))
 			if Controller.tick_array[c] < 0:
-				set_cell(2, Vector2i(c, r), 0, Vector2i(0, 16))
+				set_cell(2, Vector2i(c, r), 0, Vector2i(1, 7))
+				
+		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r), 0, Vector2i(1, 1))
+		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+1), 0, Vector2i(1, 1))
+		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+2), 0, Vector2i(1, 1))
+		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r), 0, Vector2i(1, 1))
+		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+1), 0, Vector2i(1, 1))
+		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+2), 0, Vector2i(1, 1))
+		
+		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 9))
+		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 9))
+		
+		
 		notify_runtime_tile_data_update()

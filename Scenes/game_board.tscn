@@ -24,6 +24,24 @@ texture_region_size = Vector2i(64, 64)
 0:14/0 = 0
 0:15/0 = 0
 0:16/0 = 0
+0:17/0 = 0
+1:14/0 = 0
+1:15/0 = 0
+1:16/0 = 0
+1:17/0 = 0
+1:13/0 = 0
+1:12/0 = 0
+1:11/0 = 0
+1:10/0 = 0
+1:9/0 = 0
+1:7/0 = 0
+1:6/0 = 0
+1:5/0 = 0
+1:4/0 = 0
+1:3/0 = 0
+1:2/0 = 0
+1:1/0 = 0
+1:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ylqfh"]
 tile_size = Vector2i(64, 64)
@@ -33,10 +51,10 @@ sources/0 = SubResource("TileSetAtlasSource_qsj6d")
 script = ExtResource("1_ue4gq")
 
 [node name="Button" type="Button" parent="."]
-offset_left = 1056.0
-offset_top = 5.0
-offset_right = 1146.0
-offset_bottom = 159.0
+offset_left = 997.0
+offset_top = 10.0
+offset_right = 1087.0
+offset_bottom = 164.0
 text = "FLOOD"
 
 [node name="Camera2D" type="Camera2D" parent="."]

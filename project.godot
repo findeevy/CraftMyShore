@@ -19,6 +19,11 @@ config/icon="res://logo.png"
 
 Controller="*res://controller.gd"
 
+[display]
+
+window/size/viewport_width=1088
+window/size/viewport_height=640
+
 [dotnet]
 
 project/assembly_name="Craft My Shore"

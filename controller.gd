@@ -15,6 +15,9 @@ var tick_counter = -1
 var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
 # number of dice to roll per turn; negative numbers also spawn plants
 
+var ap_start_r = 1
+var ap_start_c = 1
+
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
 	while f.get_position() < f.get_length():
@@ -42,6 +45,7 @@ func load_array(file_name):
 		tile_array.append(td)
 	board_length = init_array[0].size()
 	board_height = init_array.size()
+	ap_start_c = board_length + 1
 	water_array.resize(board_length)
 	water_array.fill(0)
 	wrs.resize(board_length)
