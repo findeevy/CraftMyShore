@@ -1,5 +1,7 @@
 extends Node
 
+@onready var label = $Label
+
 var init_array = []
 var tile_array = []
 
@@ -15,13 +17,12 @@ var tick_counter = -1
 var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
 # number of dice to roll per turn; negative numbers also spawn plants
 
-var ap_start_r = 1
-var ap_start_c = 1
-
 var mouse_tile_position = Vector2i(0,0)
 var mouse_tile_hover = Vector2i(0,0)
 var mouse_tile_selected = Vector2i(0,0)
 var mouse_step = 0
+var ap = 6
+var moveCost = 0
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -50,7 +51,6 @@ func load_array(file_name):
 		tile_array.append(td)
 	board_length = init_array[0].size()
 	board_height = init_array.size()
-	ap_start_c = board_length + 1
 	water_array.resize(board_length)
 	water_array.fill(0)
 	wrs.resize(board_length)
@@ -73,7 +73,7 @@ func calculate_water_reach(col):
 		else:
 			reach += 1
 	return [reach, high_reach]
-
+			
 func check_grass_absorb(col): # this just checks if grass absorbs a single new water tile; grass tile movement should go somewhere else
 	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 	if max_reach < 0:
@@ -93,7 +93,7 @@ func check_grass_absorb(col): # this just checks if grass absorbs a single new w
 		tile_array[max_reach][col+1] &= ~4
 		print("col %d destroyed grass right" % col)
 		wrs[col] = calculate_water_reach(col)
-
+	
 func check_destroy_city(col):
 	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 	if max_reach < 0:
@@ -101,12 +101,12 @@ func check_destroy_city(col):
 	if tile_array[max_reach][col] & 2 > 0:
 		tile_array[max_reach][col] &= ~2
 		print("col %d destroyed city" % col)
-
+		
 func get_flood_column():
 	if board_length == 11:
 		return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2
 	return rng.randi_range(0, board_length - 1)
-
+		
 func try_spawn_plants():
 	for r in board_height:
 		for c in board_length:
@@ -135,6 +135,7 @@ func process_game_tick():
 		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
 		for i in abs(tick_array[tick_counter]):
 			create_wave()
+			ap=6
 		if tick_array[tick_counter] < 0:
 			try_spawn_plants()
 	else:

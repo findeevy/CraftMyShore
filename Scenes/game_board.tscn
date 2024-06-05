@@ -86,6 +86,13 @@ format = 2
 layer_0/z_index = 1
 script = ExtResource("3_kapad")
 
+[node name="Label" type="Label" parent="."]
+offset_left = 1000.0
+offset_top = 173.0
+offset_right = 1053.0
+offset_bottom = 211.0
+text = "AP 6/6"
+
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
