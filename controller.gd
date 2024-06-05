@@ -140,13 +140,45 @@ func process_game_tick():
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
 
+func get_next_tile_cycle(td, cur_step):
+	match cur_step:
+		0, 2 when td & 4 > 0:
+			return 4
+		0, 2 when td & 1 > 0:
+			return 1
+		0, 2:
+			return 2
+		4 when td & 1 > 0:
+			return 1
+		4 when td & 2 > 0:
+			return 2
+		4:
+			return 4
+		1 when td & 2 > 0:
+			return 2
+		1 when td & 4 > 0:
+			return 4
+		1:
+			return 1
+
 func cycleTile():
-	if(tile_array[mouse_tile_position.y][mouse_tile_position.x]>0 and mouse_step==0):
-		mouse_tile_selected=Vector2i(mouse_tile_position.x,mouse_tile_position.y)
-		mouse_step = 1;
-		print("selected: "+str(tile_array[mouse_tile_position.y][mouse_tile_position.x]))
-	elif(mouse_step==1 and !(mouse_tile_selected == mouse_tile_position)):
-		tile_array[mouse_tile_position.y][mouse_tile_position.x]=tile_array[mouse_tile_selected.y][mouse_tile_selected.x]
-		tile_array[mouse_tile_selected.y][mouse_tile_selected.x]=0
-		mouse_step = 2;
-		print("placed: "+str(tile_array[mouse_tile_position.y][mouse_tile_position.x]))
+	var tile_val = tile_array[mouse_tile_position.y][mouse_tile_position.x]
+	if tile_val == 0 and mouse_step == 0:
+		return
+	if mouse_step == 0:
+		mouse_tile_selected = mouse_tile_position
+		mouse_step = get_next_tile_cycle(tile_val, mouse_step)
+		print("selected: ", tile_val)
+	elif mouse_tile_selected == mouse_tile_position:
+		mouse_step = get_next_tile_cycle(tile_val, mouse_step)
+	elif tile_val & mouse_step > 0:
+		mouse_tile_selected = mouse_tile_position
+		mouse_step = get_next_tile_cycle(tile_val, 0)
+		print("selected: ", tile_val)
+	elif init_array[mouse_tile_position.y][mouse_tile_position.x] > 0:
+		var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
+		if max_reach < mouse_tile_position.y:
+			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
+			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
+			mouse_step = 0;
+			print("placed: ", tile_val)
