@@ -18,13 +18,21 @@ func _process(delta):
 
 func _on_game_board_render():
 	var lr = 1 if offset == 0 else 0
-	print("my off:", offset)
+	
+	var wrs = []
+	for i in GameBoard.board_length:
+		wrs.append(GameBoard.calculate_water_reach(i))
+	
 	clear_layer(lr)
 	var r = 0
 	for rd in GameBoard.tile_array:
 		var c = 0
 		for cd in rd:
-			if cd & 4 > 0 and offset == 0:
+			if cd & 4 == 0 and offset == 0 and r < wrs[c][0]:
+				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 0))
+			elif offset == 2 and r < wrs[c][1]:
+				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 0))
+			elif cd & 4 > 0 and offset == 0:
 				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 1))
 			elif cd & 2 > 0 and offset == 0:
 				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 2))
