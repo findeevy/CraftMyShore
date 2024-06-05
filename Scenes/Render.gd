@@ -67,4 +67,3 @@ func _input(event):
 	if Input.is_action_just_pressed("Click") and offset==0:
 		var mouse_position = get_global_mouse_position()
 		Controller.mouse_tile_position = local_to_map(mouse_position)
-		print(Controller.mouse_tile_position)

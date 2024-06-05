@@ -17,8 +17,8 @@ var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
 
 var mouse_tile_position = Vector2i(0,0)
 var mouse_tile_hover = Vector2i(0,0)
-var mouse_layer = 0
-var mouse_selected = "none"
+var mouse_tile_selected = Vector2i(0,0)
+var mouse_step = 0
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -135,16 +135,15 @@ func process_game_tick():
 			try_spawn_plants()
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
-		
-func _input(event):
-	if(Input.is_action_just_pressed("Click") and mouse_tile_position.x<10 and mouse_tile_position.y<13):
-		cycleTile()
 
 func cycleTile():
-	if(mouse_layer<2):
-		mouse_layer+=1
-	else:
-		mouse_layer=0
-	if(tile_array[mouse_tile_position.y][mouse_tile_position.x]>0):
-		print(tile_array[mouse_tile_position.y][mouse_tile_position.x])
+	if(tile_array[mouse_tile_position.y][mouse_tile_position.x]>0 and mouse_step==0):
+		mouse_tile_selected=Vector2i(mouse_tile_position.x,mouse_tile_position.y)
+		mouse_step = 1;
+		print("selected: "+str(tile_array[mouse_tile_position.y][mouse_tile_position.x]))
+	elif(mouse_step==1 and !(mouse_tile_selected == mouse_tile_position)):
+		tile_array[mouse_tile_position.y][mouse_tile_position.x]=tile_array[mouse_tile_selected.y][mouse_tile_selected.x]
+		tile_array[mouse_tile_selected.y][mouse_tile_selected.x]=0
+		mouse_step = 2;
+		print("placed: "+str(tile_array[mouse_tile_position.y][mouse_tile_position.x]))
 	
