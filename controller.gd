@@ -21,6 +21,9 @@ var mouse_tile_position = Vector2i(0,0)
 var mouse_tile_hover = Vector2i(0,0)
 var mouse_tile_selected = Vector2i(0,0)
 var mouse_step = 0
+
+var ap_start_c = 1
+var ap_start_r = 1
 var ap = 6
 var moveCost = 0
 
@@ -55,6 +58,7 @@ func load_array(file_name):
 	water_array.fill(0)
 	wrs.resize(board_length)
 	wrs.fill([0,0])
+	ap_start_c = board_length + 1
 	process_game_tick()
 
 func calculate_water_reach(col):
