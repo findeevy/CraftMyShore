@@ -14,3 +14,7 @@ func _process(delta):
 func _on_button_pressed():
 	Controller.process_game_tick()
 	render.emit()
+func _input(event):
+	if(Input.is_action_just_pressed("Click") and Controller.mouse_tile_position.x<=Controller.board_length and Controller.mouse_tile_position.y<=Controller.board_height):
+		Controller.cycleTile()
+		render.emit()
