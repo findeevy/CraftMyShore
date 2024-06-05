@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ct8347okhc2x6"]
+[gd_scene load_steps=6 format=3 uid="uid://ct8347okhc2x6"]
 
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="1_hifh2"]
-[ext_resource type="Script" path="res://Scenes/Waves.gd" id="2_vfthv"]
+[ext_resource type="Script" path="res://Scenes/game_board.gd" id="1_ue4gq"]
+[ext_resource type="Script" path="res://Scenes/Render.gd" id="3_kapad"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qsj6d"]
 texture = ExtResource("1_hifh2")
@@ -21,6 +22,7 @@ tile_size = Vector2i(64, 64)
 sources/0 = SubResource("TileSetAtlasSource_qsj6d")
 
 [node name="GameBoard" type="Node2D"]
+script = ExtResource("1_ue4gq")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -29,9 +31,6 @@ anchor_mode = 0
 tile_set = SubResource("TileSet_ylqfh")
 rendering_quadrant_size = 12
 format = 2
-layer_0/name = "Blocks"
-layer_0/z_index = 1
-layer_0/tile_data = PackedInt32Array(393217, 0, 2, 327682, 0, 2, 262147, 0, 2, 196612, 0, 2, 131077, 0, 2, 262149, 0, 2, 196614, 0, 2, 262151, 0, 2, 327688, 0, 2, 393225, 0, 2, 393220, 0, 1, 393222, 0, 1, 524288, 0, 3, 524289, 0, 3, 524290, 0, 3, 524291, 0, 3, 524292, 0, 3, 524293, 0, 3, 524294, 0, 3, 524295, 0, 3, 524296, 0, 3, 524297, 0, 3, 524298, 0, 3)
-layer_1/name = "Bottom"
-layer_1/tile_data = PackedInt32Array(0, 0, 4, 1, 0, 4, 2, 0, 4, 3, 0, 4, 4, 0, 4, 5, 0, 4, 6, 0, 4, 7, 0, 4, 8, 0, 4, 9, 0, 4, 10, 0, 4, 65536, 0, 4, 65537, 0, 4, 65538, 0, 4, 65539, 0, 4, 65540, 0, 4, 65541, 0, 4, 65542, 0, 4, 65543, 0, 4, 65544, 0, 4, 65545, 0, 4, 65546, 0, 4, 131082, 0, 4, 131081, 0, 4, 131080, 0, 4, 131072, 0, 4, 131073, 0, 4, 131074, 0, 4, 131075, 0, 4, 131079, 0, 4, 131076, 0, 5, 131078, 0, 5, 196611, 0, 5, 262146, 0, 5, 327681, 0, 5, 393216, 0, 5, 196615, 0, 5, 262152, 0, 5, 327689, 0, 5, 393226, 0, 5, 131077, 0, 5, 196612, 0, 5, 262149, 0, 5, 196614, 0, 5, 262147, 0, 5, 327682, 0, 5, 393217, 0, 5, 262151, 0, 5, 327688, 0, 5, 393225, 0, 5, 393218, 0, 5, 327683, 0, 5, 262148, 0, 5, 196613, 0, 5, 262150, 0, 5, 327687, 0, 5, 393224, 0, 5, 393220, 0, 8, 393222, 0, 8, 524288, 0, 7, 524289, 0, 7, 524290, 0, 7, 524291, 0, 7, 524292, 0, 7, 524293, 0, 7, 524294, 0, 7, 524295, 0, 7, 524296, 0, 7, 524297, 0, 7, 524298, 0, 7, 458752, 0, 5, 458753, 0, 5, 458754, 0, 5, 458755, 0, 5, 458756, 0, 5, 458757, 0, 5, 458758, 0, 5, 458759, 0, 5, 458760, 0, 5, 458761, 0, 5, 458762, 0, 5, 393221, 0, 5, 327684, 0, 5, 327685, 0, 5, 327686, 0, 5, 393223, 0, 5, 393219, 0, 5, 327680, 0, 4, 262144, 0, 4, 196608, 0, 4, 196609, 0, 4, 196610, 0, 4, 262145, 0, 4, 196616, 0, 4, 196617, 0, 4, 196618, 0, 4, 262154, 0, 4, 327690, 0, 4, 262153, 0, 4)
-script = ExtResource("2_vfthv")
+script = ExtResource("3_kapad")
+
+[connection signal="render" from="." to="TileMap" method="_on_game_board_render"]

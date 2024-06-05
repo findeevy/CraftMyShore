@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/game_board.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://logo.png"
 
+[autoload]
+
+GameBoard="*res://Scenes/game_board.gd"
+
 [dotnet]
 
 project/assembly_name="Craft My Shore"
