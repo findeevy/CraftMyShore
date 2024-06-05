@@ -139,9 +139,9 @@ func process_game_tick():
 		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
 		for i in abs(tick_array[tick_counter]):
 			create_wave()
-			ap=6
 		if tick_array[tick_counter] < 0:
 			try_spawn_plants()
+		ap=6
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
 
@@ -183,6 +183,13 @@ func cycleTile():
 	elif init_array[mouse_tile_position.y][mouse_tile_position.x] > 0:
 		var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
 		if max_reach < mouse_tile_position.y:
+			var dist = abs(mouse_tile_position.y - mouse_tile_selected.y) + abs(mouse_tile_position.x - mouse_tile_selected.x)
+			var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 1
+			
+			if ap - dist * move_cost < 0:
+				return
+			ap -= dist * move_cost
+			
 			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
 			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
 			mouse_step = 0;
