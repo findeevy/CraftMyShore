@@ -16,6 +16,14 @@ texture_region_size = Vector2i(64, 64)
 0:6/0 = 0
 0:7/0 = 0
 0:8/0 = 0
+0:9/0 = 0
+0:10/0 = 0
+0:11/0 = 0
+0:12/0 = 0
+0:13/0 = 0
+0:14/0 = 0
+0:15/0 = 0
+0:16/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ylqfh"]
 tile_size = Vector2i(64, 64)
@@ -40,6 +48,8 @@ rendering_quadrant_size = 12
 format = 2
 layer_1/z_index = 3
 layer_1/tile_data = PackedInt32Array()
+layer_2/tile_data = PackedInt32Array()
+layer_3/tile_data = PackedInt32Array()
 script = ExtResource("3_kapad")
 
 [node name="TileMap2" type="TileMap" parent="."]

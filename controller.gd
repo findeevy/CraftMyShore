@@ -11,7 +11,7 @@ var wrs = []
 
 var rng = RandomNumberGenerator.new()
 
-var tick_counter = 0
+var tick_counter = -1
 var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
 # number of dice to roll per turn; negative numbers also spawn plants
 
@@ -111,17 +111,25 @@ func create_wave():
 	wrs[col] = calculate_water_reach(col)
 	check_grass_absorb(col)
 	check_destroy_city(col)
-		
+
+func count_surviving_cities():
+	var city_count = 0
+	for rd in tile_array:
+		for cd in rd:
+			if cd & 2 > 0:
+				city_count += 1
+	return city_count
+
 func process_game_tick():
-	if tick_counter < tick_array.size():
+	if tick_counter < tick_array.size() - 1:
+		tick_counter += 1
 		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
 		for i in abs(tick_array[tick_counter]):
 			create_wave()
 		if tick_array[tick_counter] < 0:
 			try_spawn_plants()
-		tick_counter += 1
 	else:
-		print("done")
+		print("done; %d cities survived" % count_surviving_cities())
 
 
 

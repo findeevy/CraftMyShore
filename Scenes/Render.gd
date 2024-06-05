@@ -42,6 +42,10 @@ func _on_game_board_render():
 			c+=1
 		r+=1
 	notify_runtime_tile_data_update(lr)
+	if offset == 0:
+		clear_layer(3)
+		set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(0, 9))
+		notify_runtime_tile_data_update(3)
 	
 func _on_game_board_render_background():
 	if offset == 0:
@@ -53,4 +57,8 @@ func _on_game_board_render_background():
 				set_cell(0, Vector2i(c, r), 0, Vector2i(0, cd + 4))
 				c+=1
 			r+=1
-		notify_runtime_tile_data_update(0)
+		for c in Controller.tick_array.size():
+			set_cell(0, Vector2i(c, r), 0, Vector2i(0, abs(Controller.tick_array[c]) + 10))
+			if Controller.tick_array[c] < 0:
+				set_cell(2, Vector2i(c, r), 0, Vector2i(0, 16))
+		notify_runtime_tile_data_update()
