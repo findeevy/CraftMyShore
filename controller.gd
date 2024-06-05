@@ -25,7 +25,7 @@ var mouse_step = 0
 var ap_start_c = 1
 var ap_start_r = 1
 var ap = 6
-var moveCost = 0
+var cur_moves = []
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -142,6 +142,7 @@ func process_game_tick():
 		if tick_array[tick_counter] < 0:
 			try_spawn_plants()
 		ap=6
+		cur_moves = []
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
 
@@ -189,8 +190,15 @@ func cycleTile():
 			if ap - dist * move_cost < 0:
 				return
 			ap -= dist * move_cost
+			cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step])
 			
 			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
 			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
 			mouse_step = 0;
 			print("placed: ", tile_val)
+			
+func undo_move(move_index):
+	var res = cur_moves.pop_at(move_index)
+	ap += res[0] * res[1]
+	tile_array[res[2].y][res[2].x] &= ~res[4]
+	tile_array[res[3].y][res[3].x] |= res[4]
