@@ -17,7 +17,7 @@ config/icon="res://logo.png"
 
 [autoload]
 
-GameBoard="*res://Scenes/game_board.gd"
+Controller="*res://controller.gd"
 
 [dotnet]
 

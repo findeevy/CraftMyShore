@@ -20,12 +20,12 @@ func _on_game_board_render():
 	var lr = 1 if offset == 0 else 0
 	
 	var wrs = []
-	for i in GameBoard.board_length:
-		wrs.append(GameBoard.calculate_water_reach(i))
+	for i in Controller.board_length:
+		wrs.append(Controller.calculate_water_reach(i))
 	
 	clear_layer(lr)
 	var r = 0
-	for rd in GameBoard.tile_array:
+	for rd in Controller.tile_array:
 		var c = 0
 		for cd in rd:
 			if cd & 4 == 0 and offset == 0 and r < wrs[c][0]:
@@ -52,7 +52,7 @@ func _on_game_board_render_background():
 	if offset == 0:
 		clear_layer(0)
 		var r = 0
-		for rd in GameBoard.init_array:
+		for rd in Controller.init_array:
 			var c = 0
 			for cd in rd:
 				set_cell(0, Vector2i(c, r), 0, Vector2i(0, cd + 4))
