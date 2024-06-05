@@ -15,6 +15,11 @@ var tick_counter = -1
 var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
 # number of dice to roll per turn; negative numbers also spawn plants
 
+var mouse_tile_position = Vector2i(0,0)
+var mouse_tile_hover = Vector2i(0,0)
+var mouse_layer = 0
+var mouse_selected = "none"
+
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
 	while f.get_position() < f.get_length():
@@ -130,6 +135,16 @@ func process_game_tick():
 			try_spawn_plants()
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
+		
+func _input(event):
+	if(Input.is_action_just_pressed("Click") and mouse_tile_position.x<10 and mouse_tile_position.y<13):
+		cycleTile()
 
-
-
+func cycleTile():
+	if(mouse_layer<2):
+		mouse_layer+=1
+	else:
+		mouse_layer=0
+	if(tile_array[mouse_tile_position.y][mouse_tile_position.x]>0):
+		print(tile_array[mouse_tile_position.y][mouse_tile_position.x])
+	

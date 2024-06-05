@@ -14,7 +14,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	var mouse_position = get_global_mouse_position()
+	Controller.mouse_tile_hover = local_to_map(mouse_position)
 
 func _on_game_board_render():
 	var lr = 1 if offset == 0 else 0
@@ -62,3 +63,8 @@ func _on_game_board_render_background():
 			if Controller.tick_array[c] < 0:
 				set_cell(2, Vector2i(c, r), 0, Vector2i(0, 16))
 		notify_runtime_tile_data_update()
+func _input(event):
+	if Input.is_action_just_pressed("Click") and offset==0:
+		var mouse_position = get_global_mouse_position()
+		Controller.mouse_tile_position = local_to_map(mouse_position)
+		print(Controller.mouse_tile_position)
