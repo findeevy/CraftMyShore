@@ -6,10 +6,14 @@ var tile_array = []
 var board_length = 0
 var board_height = 0
 
-var water_counter = 0
-var wave_size = 1
 var water_array = []
+var wrs = []
+
 var rng = RandomNumberGenerator.new()
+
+var tick_counter = 0
+var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
+# number of dice to roll per turn; negative numbers also spawn plants
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -28,7 +32,7 @@ func load_array(file_name):
 				"w":
 					id.append(0)
 					td.append(0)
-				"g":
+				"v":
 					id.append(4)
 					td.append(4)
 				"t":
@@ -40,6 +44,9 @@ func load_array(file_name):
 	board_height = init_array.size()
 	water_array.resize(board_length)
 	water_array.fill(0)
+	wrs.resize(board_length)
+	wrs.fill([0,0])
+	process_game_tick()
 
 func calculate_water_reach(col):
 	var vol = water_array[col]
@@ -59,26 +66,27 @@ func calculate_water_reach(col):
 	return [reach, high_reach]
 			
 func check_grass_absorb(col): # this just checks if grass absorbs a single new water tile; grass tile movement should go somewhere else
-	var res = calculate_water_reach(col)
-	var max_reach = max(res[0], res[1]) - 1
+	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 	if max_reach < 0:
 		return
 	if max_reach + 1 < board_height and tile_array[max_reach+1][col] & 4 > 0:
 		water_array[col] -= 1
 		tile_array[max_reach+1][col] &= ~4
 		print("col %d destroyed grass down" % col)
+		wrs[col] = calculate_water_reach(col)
 	elif col > 0 and tile_array[max_reach][col-1] & 4 > 0:
 		water_array[col] -= 1
 		tile_array[max_reach][col-1] &= ~4
 		print("col %d destroyed grass left" % col)
+		wrs[col] = calculate_water_reach(col)
 	elif col < board_length-1 and tile_array[max_reach][col+1] & 4 > 0:
 		water_array[col] -= 1
 		tile_array[max_reach][col+1] &= ~4
 		print("col %d destroyed grass right" % col)
+		wrs[col] = calculate_water_reach(col)
 	
 func check_destroy_city(col):
-	var res = calculate_water_reach(col)
-	var max_reach = max(res[0], res[1]) - 1
+	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 	if max_reach < 0:
 		return
 	if tile_array[max_reach][col] & 2 > 0:
@@ -90,12 +98,30 @@ func get_flood_column():
 		return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2
 	return rng.randi_range(0, board_length - 1)
 		
+func try_spawn_plants():
+	for r in board_height:
+		for c in board_length:
+			var max_reach = max(wrs[c][0], wrs[c][1]) - 1
+			if init_array[r][c] == 4 and tile_array[r][c] == 0 and max_reach < r:
+				tile_array[r][c] |= 4
+
 func create_wave():
-	for i in wave_size:
-		var waterRng = get_flood_column()
-		water_array[waterRng] += 1
-		check_grass_absorb(waterRng)
-		check_destroy_city(waterRng)
+	var col = get_flood_column()
+	water_array[col] += 1
+	wrs[col] = calculate_water_reach(col)
+	check_grass_absorb(col)
+	check_destroy_city(col)
+		
+func process_game_tick():
+	if tick_counter < tick_array.size():
+		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
+		for i in abs(tick_array[tick_counter]):
+			create_wave()
+		if tick_array[tick_counter] < 0:
+			try_spawn_plants()
+		tick_counter += 1
+	else:
+		print("done")
 
 
 

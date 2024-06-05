@@ -12,5 +12,5 @@ func _process(delta):
 	pass
 	
 func _on_button_pressed():
-	Controller.create_wave()
+	Controller.process_game_tick()
 	render.emit()
