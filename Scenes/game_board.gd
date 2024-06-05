@@ -1,5 +1,6 @@
 extends Node
 
+signal render_background
 signal render
 
 var init_array = []
@@ -35,6 +36,7 @@ func load_array(file_name):
 func _ready():
 	load_array("map.dat")
 	render.emit()
+	render_background.emit()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

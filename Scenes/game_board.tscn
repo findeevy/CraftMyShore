@@ -31,6 +31,8 @@ anchor_mode = 0
 tile_set = SubResource("TileSet_ylqfh")
 rendering_quadrant_size = 12
 format = 2
+layer_1/tile_data = PackedInt32Array()
 script = ExtResource("3_kapad")
 
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
+[connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
