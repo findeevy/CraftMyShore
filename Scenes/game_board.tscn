@@ -31,8 +31,27 @@ anchor_mode = 0
 tile_set = SubResource("TileSet_ylqfh")
 rendering_quadrant_size = 12
 format = 2
+layer_1/z_index = 3
 layer_1/tile_data = PackedInt32Array()
 script = ExtResource("3_kapad")
 
+[node name="TileMap2" type="TileMap" parent="."]
+position = Vector2(0, 12)
+tile_set = SubResource("TileSet_ylqfh")
+rendering_quadrant_size = 12
+format = 2
+layer_0/z_index = 2
+script = ExtResource("3_kapad")
+
+[node name="TileMap3" type="TileMap" parent="."]
+position = Vector2(0, 24)
+tile_set = SubResource("TileSet_ylqfh")
+rendering_quadrant_size = 12
+format = 2
+layer_0/z_index = 1
+script = ExtResource("3_kapad")
+
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
+[connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
+[connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
 [connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
