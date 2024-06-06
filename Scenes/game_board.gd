@@ -11,10 +11,22 @@ func _ready():
 func _process(delta):
 	pass
 	
-func _on_button_pressed():
-	Controller.process_game_tick()
-	render.emit()
 func _input(event):
-	if(Input.is_action_just_pressed("Click") and Controller.mouse_tile_position.x<=Controller.board_length and Controller.mouse_tile_position.y<=Controller.board_height):
-		Controller.cycleTile()
-		render.emit()
+	if Input.is_action_just_pressed("Click"):
+		if Controller.mouse_tile_position.x < Controller.board_length and Controller.mouse_tile_position.y < Controller.board_height:
+			Controller.cycleTile()
+			render.emit()
+		if Controller.mouse_tile_position.x in range(Controller.ap_start_c, Controller.ap_start_c + 2):
+			if Controller.mouse_tile_position.y in range(Controller.ap_start_r, Controller.ap_start_r + 3):
+				var click_pos = 2 * (Controller.mouse_tile_position.y - Controller.ap_start_r) + Controller.mouse_tile_position.x - Controller.ap_start_c
+				if Controller.ap_craft_indicator[click_pos] == null:
+					return
+				print(click_pos)
+				print(Controller.ap_craft_indicator)
+				Controller.undo_move(Controller.ap_craft_indicator[click_pos][1])
+				render.emit()
+			elif Controller.mouse_tile_position.y == Controller.ap_start_r + 3:
+				Controller.process_game_tick()
+				render.emit()
+	if Input.is_action_just_pressed("Right Click"):
+		Controller.mouse_step = 0

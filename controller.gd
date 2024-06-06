@@ -26,6 +26,7 @@ var ap_start_c = 1
 var ap_start_r = 1
 var ap = 6
 var cur_moves = []
+var ap_craft_indicator = [null, null, null, null, null, null]
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -143,6 +144,8 @@ func process_game_tick():
 			try_spawn_plants()
 		ap=6
 		cur_moves = []
+		ap_craft_indicator.fill(null)
+		mouse_step = 0
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
 
@@ -185,20 +188,76 @@ func cycleTile():
 		var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
 		if max_reach < mouse_tile_position.y:
 			var dist = abs(mouse_tile_position.y - mouse_tile_selected.y) + abs(mouse_tile_position.x - mouse_tile_selected.x)
-			var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 1
+			var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 			
+			for i in cur_moves.size():
+				if cur_moves[i][2] == mouse_tile_selected and cur_moves[i][4] == mouse_step:
+					dist = abs(mouse_tile_position.y - cur_moves[i][3].y) + abs(mouse_tile_position.x - cur_moves[i][3].x)
+					if ap + cur_moves[i][0] + cur_moves[i][1] - dist * move_cost < 0:
+						mouse_step = 0
+						return
+					mouse_tile_selected = cur_moves[i][3]
+					undo_move(i)
+					break
+					
 			if ap - dist * move_cost < 0:
+				mouse_step = 0
 				return
 			ap -= dist * move_cost
-			cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step])
 			
-			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
-			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
+			if dist > 0:
+				cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step])
+				fill_ap_craft_indicator()
+			
+				tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
+				tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
+			
 			mouse_step = 0;
 			print("placed: ", tile_val)
 			
 func undo_move(move_index):
-	var res = cur_moves.pop_at(move_index)
+	var res = cur_moves[move_index]
+	if tile_array[res[3].y][res[3].x] & res[4] > 0:
+		return
+	cur_moves.pop_at(move_index)
+	fill_ap_craft_indicator()
 	ap += res[0] * res[1]
 	tile_array[res[2].y][res[2].x] &= ~res[4]
 	tile_array[res[3].y][res[3].x] |= res[4]
+
+func fill_ap_craft_indicator():
+	ap_craft_indicator.fill(null)
+	cur_moves.sort_custom(func(a, b): return a[0] * a[1] > b[0] * b[1])
+	print(cur_moves)
+	for i in cur_moves.size():
+		var val = cur_moves[i]
+		match val[0]:
+			3:
+				if ap_craft_indicator[0] != null or val[1] > 1:
+					ap_craft_indicator[1] = [3, i]
+					ap_craft_indicator[3] = [3, i]
+					ap_craft_indicator[5] = [3, i]
+				if ap_craft_indicator[0] == null:
+					ap_craft_indicator[0] = [3, i]
+					ap_craft_indicator[2] = [3, i]
+					ap_craft_indicator[4] = [3, i]
+			2:
+				for mov_cnt in val[1]:
+					if ap_craft_indicator[0] == null:
+						ap_craft_indicator[0] = [2, i]
+						ap_craft_indicator[2] = [2, i]
+					elif ap_craft_indicator[1] == null:
+						ap_craft_indicator[1] = [2, i]
+						ap_craft_indicator[3] = [2, i]
+					elif ap_craft_indicator[4] == null:
+						ap_craft_indicator[4] = [2, i]
+						ap_craft_indicator[5] = [2, i]
+			1:
+				for mov_cnt in val[1]:
+					var filled = false
+					for c in range(0, 2):
+						for r in range(0, 3):
+							if ap_craft_indicator[c + 2 * r] == null and not filled:
+								ap_craft_indicator[c + 2 * r] = [1, i]
+								filled = true
+						
