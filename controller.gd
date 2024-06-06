@@ -33,9 +33,19 @@ var temp_water_break_move = null
 var historical_game_states = []
 
 func load_array(file_name):
-	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
-	while f.get_position() < f.get_length():
-		var l = f.get_line()
+	var map_hc = """wwwwwwwwwww
+wwwwwwwwwww
+wwwwlclwwww
+wwwlclclwww
+wwlclclclww
+wlclllllclw
+lclllllllcl
+clllvlvlllc
+ttttttttttt"""
+	#var f = FileAccess.open("res://" + file_name, FileAccess.READ)
+	#while f.get_position() < f.get_length():
+		#var l = f.get_line()
+	for l in map_hc.split("\n"):
 		var id = []
 		var td = []
 		for c in l:
