@@ -20,3 +20,6 @@ mono_crash.*.json
 
 # Temporary Engine Files
 *.tmp
+
+# Saved Game Data
+*previousGame.dat
