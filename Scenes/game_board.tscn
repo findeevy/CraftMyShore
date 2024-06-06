@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://ct8347okhc2x6"]
+[gd_scene load_steps=9 format=3 uid="uid://ct8347okhc2x6"]
 
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="1_hifh2"]
 [ext_resource type="Script" path="res://Scenes/game_board.gd" id="1_ue4gq"]
 [ext_resource type="Script" path="res://Scenes/Render.gd" id="3_kapad"]
 [ext_resource type="Texture2D" uid="uid://qgooqrce6dgm" path="res://Textures/cursor.png" id="4_o74fj"]
 [ext_resource type="Script" path="res://Scenes/Cursor.gd" id="5_b3uew"]
+[ext_resource type="Script" path="res://Scenes/Selected.gd" id="6_jk5sf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qsj6d"]
 texture = ExtResource("1_hifh2")
@@ -100,6 +101,10 @@ position = Vector2(1.84241, 3.30222)
 texture = ExtResource("4_o74fj")
 centered = false
 script = ExtResource("5_b3uew")
+
+[node name="Selected" type="Sprite2D" parent="."]
+centered = false
+script = ExtResource("6_jk5sf")
 
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
