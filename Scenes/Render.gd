@@ -17,6 +17,9 @@ func _process(delta):
 	var mouse_position = get_global_mouse_position()
 	Controller.mouse_tile_hover = local_to_map(mouse_position)
 
+func render_tree_waterlogged(r, c):
+	return Vector2i(1, 8) if Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)
+
 func _on_game_board_render():
 	var lr = 1 if offset == 0 else 0
 	clear_layer(lr)
@@ -29,7 +32,7 @@ func _on_game_board_render():
 			elif offset == 2 and r < Controller.wrs[c][1]:
 				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 0))
 			elif cd & 4 > 0 and offset == 0:
-				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 1))
+				set_cell(lr, Vector2i(c, r), 0, render_tree_waterlogged(r, c))
 			elif cd & 2 > 0 and offset == 0:
 				set_cell(lr, Vector2i(c, r), 0, Vector2i(0, 2))
 			elif cd & 1 > 0 and offset == 0:
