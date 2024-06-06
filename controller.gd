@@ -30,6 +30,8 @@ var waters_to_break = []
 var pending_broken_waters = []
 var temp_water_break_move = null
 
+var historical_game_states = []
+
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
 	while f.get_position() < f.get_length():
@@ -146,17 +148,17 @@ func count_adjacent_water_tiles(r, c):
 		waters_to_break.append([r, c - 1])
 	if c < board_length - 1 and max(wrs[c + 1][0], wrs[c + 1][1]) - 1 >= r:
 		waters_to_break.append([r, c + 1])
-	print("counting adjacent: ", waters_to_break)
 
 func process_game_tick():
 	if tick_counter < tick_array.size() - 1:
+		historical_game_states.append([tile_array.duplicate(true), wrs.duplicate(true), ap_craft_indicator.duplicate(true)])
 		tick_counter += 1
 		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
 		for i in abs(tick_array[tick_counter]):
 			create_wave()
 		if tick_array[tick_counter] < 0:
 			try_spawn_plants()
-		ap=6
+		ap = 6
 		cur_moves = []
 		for winfo in pending_broken_waters:
 			if winfo == null:
@@ -165,8 +167,17 @@ func process_game_tick():
 		pending_broken_waters = []
 		ap_craft_indicator.fill(null)
 		mouse_step = 0
+		if tick_counter == tick_array.size():
+			historical_game_states.append([tile_array, wrs, ap_craft_indicator])
+			print("done; %d cities survived" % count_surviving_cities())
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
+
+func view_historical_tick(tick):
+	print("viewing tick %d" % tick)
+	tile_array = historical_game_states[tick][0]
+	wrs = historical_game_states[tick][1]
+	ap_craft_indicator = historical_game_states[tick][2]
 
 func get_next_tile_cycle(td, cur_step):
 	match cur_step:
@@ -245,13 +256,11 @@ func cycleTile():
 	if mouse_step == 0:
 		mouse_tile_selected = mouse_tile_position
 		mouse_step = get_next_tile_cycle(tile_val, mouse_step)
-		print("selected: ", tile_val)
 	elif mouse_tile_selected == mouse_tile_position:
 		mouse_step = get_next_tile_cycle(tile_val, mouse_step)
 	elif tile_val & mouse_step > 0:
 		mouse_tile_selected = mouse_tile_position
 		mouse_step = get_next_tile_cycle(tile_val, 0)
-		print("selected: ", tile_val)
 	elif init_array[mouse_tile_position.y][mouse_tile_position.x] > 0:
 		try_do_move()
 
@@ -297,8 +306,6 @@ func undo_move(move_index):
 		elif col < board_length-1 and tile_array[max_reach][col+1] & 4 > 0 and not is_tile_watterlogged(max_reach, col+1):
 			check_tile = Vector2i(col+1, max_reach)
 		
-		print("check tile ", check_tile)
-		
 		if check_tile:
 			for i in cur_moves.size():
 				cur_moves[i][5] = pending_broken_waters.size()
@@ -318,7 +325,6 @@ func undo_move(move_index):
 func fill_ap_craft_indicator():
 	ap_craft_indicator.fill(null)
 	cur_moves.sort_custom(func(a, b): return a[0] * a[1] > b[0] * b[1])
-	print(cur_moves)
 	for i in cur_moves.size():
 		var val = cur_moves[i]
 		match val[0]:
