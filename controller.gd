@@ -211,6 +211,7 @@ func cycleTile():
 			print("placed: ", tile_val)
 			
 func undo_move(move_index):
+	print(cur_moves)
 	var res = cur_moves.pop_at(move_index)
 	fill_ap_craft_indicator()
 	ap += res[0] * res[1]
