@@ -58,6 +58,8 @@ func _on_game_board_render():
 					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10))
 				1:
 					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13))
+		for water in Controller.waters_to_break:
+			set_cell(3, Vector2i(water[1], water[0]), 0, Vector2i(1, 0))
 		notify_runtime_tile_data_update(3)
 	
 func _on_game_board_render_background():

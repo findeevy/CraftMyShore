@@ -1,7 +1,5 @@
 extends Node
 
-@onready var label = $Label
-
 var init_array = []
 var tile_array = []
 
@@ -27,6 +25,10 @@ var ap_start_r = 1
 var ap = 6
 var cur_moves = []
 var ap_craft_indicator = [null, null, null, null, null, null]
+
+var waters_to_break = []
+var pending_broken_waters = []
+var temp_water_break_move = null
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -134,6 +136,18 @@ func count_surviving_cities():
 				city_count += 1
 	return city_count
 
+func count_adjacent_water_tiles(r, c):
+	waters_to_break = []
+	if r > 0 and max(wrs[c][0], wrs[c][1]) - 1 >= r - 1:
+		waters_to_break.append([r - 1, c])
+	if r < board_height - 1 and max(wrs[c][0], wrs[c][1]) - 1 >= r + 1:
+		waters_to_break.append([r + 1, c])
+	if c > 0 and max(wrs[c - 1][0], wrs[c - 1][1]) - 1 >= r:
+		waters_to_break.append([r, c - 1])
+	if c < board_length - 1 and max(wrs[c + 1][0], wrs[c + 1][1]) - 1 >= r:
+		waters_to_break.append([r, c + 1])
+	print("counting adjacent: ", waters_to_break)
+
 func process_game_tick():
 	if tick_counter < tick_array.size() - 1:
 		tick_counter += 1
@@ -144,6 +158,11 @@ func process_game_tick():
 			try_spawn_plants()
 		ap=6
 		cur_moves = []
+		for winfo in pending_broken_waters:
+			if winfo == null:
+				continue
+			tile_array[winfo[0]][winfo[1]] &= ~4
+		pending_broken_waters = []
 		ap_craft_indicator.fill(null)
 		mouse_step = 0
 	else:
@@ -206,7 +225,27 @@ func cycleTile():
 			ap -= dist * move_cost
 			
 			if dist > 0:
-				cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step])
+				var water_will_break = -1
+				if mouse_step == 4:
+					count_adjacent_water_tiles(mouse_tile_position.y, mouse_tile_position.x)
+					if waters_to_break.size() == 1:
+						var col = waters_to_break[0][1]
+						print("breaking one water in ", col)
+						print(water_array)
+						print(wrs)
+						water_array[col] -= 1
+						wrs[col] = calculate_water_reach(col)
+						print(water_array)
+						print(wrs)
+						water_will_break = pending_broken_waters.size()
+						pending_broken_waters.append([mouse_tile_position.y, mouse_tile_position.x, waters_to_break[0][0], waters_to_break[0][1]])
+						waters_to_break = []
+					elif waters_to_break.size() > 0:
+						temp_water_break_move = [move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step, pending_broken_waters.size()]
+						tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
+						tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
+						return
+				cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step, water_will_break])
 				fill_ap_craft_indicator()
 			
 				tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
@@ -224,6 +263,11 @@ func undo_move(move_index):
 	ap += res[0] * res[1]
 	tile_array[res[2].y][res[2].x] &= ~res[4]
 	tile_array[res[3].y][res[3].x] |= res[4]
+	if res[5] >= 0:
+		var col = pending_broken_waters[res[5]][3]
+		water_array[col] += 1
+		wrs[col] = calculate_water_reach(col)
+		pending_broken_waters[res[5]] = null
 
 func fill_ap_craft_indicator():
 	ap_craft_indicator.fill(null)
