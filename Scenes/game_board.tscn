@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ct8347okhc2x6"]
+[gd_scene load_steps=11 format=3 uid="uid://ct8347okhc2x6"]
 
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="1_hifh2"]
 [ext_resource type="Script" path="res://Scenes/game_board.gd" id="1_ue4gq"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://qgooqrce6dgm" path="res://Textures/cursor.png" id="4_o74fj"]
 [ext_resource type="Script" path="res://Scenes/Cursor.gd" id="5_b3uew"]
 [ext_resource type="Script" path="res://Scenes/Selected.gd" id="6_jk5sf"]
+[ext_resource type="Texture2D" uid="uid://vfoqd27fy31y" path="res://Textures/introBackground.png" id="7_0blw3"]
+[ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="8_woynj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qsj6d"]
 texture = ExtResource("1_hifh2")
@@ -91,6 +93,25 @@ script = ExtResource("5_b3uew")
 [node name="Selected" type="Sprite2D" parent="."]
 centered = false
 script = ExtResource("6_jk5sf")
+
+[node name="InstructionBackground" type="Sprite2D" parent="."]
+position = Vector2(704, 320)
+texture = ExtResource("7_0blw3")
+centered = false
+
+[node name="Label" type="Label" parent="InstructionBackground"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 375.0
+offset_bottom = 232.0
+theme_override_fonts/font = ExtResource("8_woynj")
+theme_override_font_sizes/font_size = 32
+text = "CRAFT MY COAST GODOT DEMO
+------------------------------
+END TURN: SPAWN WAVES
+LEFT CLICK: SELECT
+RIGHT CLICK DESELECT
+------------------------------"
 
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
