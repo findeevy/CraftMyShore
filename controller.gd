@@ -196,15 +196,16 @@ func cycleTile():
 			var dist = abs(mouse_tile_position.y - mouse_tile_selected.y) + abs(mouse_tile_position.x - mouse_tile_selected.x)
 			var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 			
-			if ap - dist * move_cost < 0 or dist == 0:
+			if ap - dist * move_cost < 0:
 				return
 			ap -= dist * move_cost
 			
-			cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step])
-			fill_ap_craft_indicator()
+			if dist > 0:
+				cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step])
+				fill_ap_craft_indicator()
 			
-			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
-			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
+				tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
+				tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
 			
 			mouse_step = 0;
 			print("placed: ", tile_val)
