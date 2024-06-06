@@ -8,12 +8,6 @@ var file_exist = FileAccess.file_exists("res://previousGame.dat")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-
-	if file_exist:
-		previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
-	else:
-		FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
-		previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
 	z_index = 5
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -34,22 +28,25 @@ func _process(delta):
 			modulate = Color(1, 0.63529, 0.078431)
 			draw_cursor(2)
 		else:
-			modulate = Color(1, 1, 1)
 			texture = load("res://Textures/cursor.png")
-		#Create analysis file.
-		if (Controller.tick_counter < Controller.tick_array.size() - 1) == false and file_written == false :
-			previous_game_text=previous_game.get_as_text()+str(Controller.tile_array)+"\n"
-			var file = FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
-			file.store_string(previous_game_text)
-			previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
-			file_written=true
-			print("SAVED")
+			var type_picked = Controller.tile_array[Controller.mouse_tile_hover.y][Controller.mouse_tile_hover.x]
+			if (type_picked==4):
+				modulate = Color(0.11764, 0.43529, 0.31372)
+			elif(type_picked==2):
+				modulate = Color(0.91764, 0.196078, 0.23529)
+			elif(type_picked==1):
+				modulate = Color(1, 0.63529, 0.078431)
+			else:
+				modulate = Color(1, 1, 1)
 
 func draw_cursor(cost):
 	var dist = abs(Controller.mouse_tile_position.y - Controller.mouse_tile_hover.y) + abs(Controller.mouse_tile_position.x - Controller.mouse_tile_hover.x)
 	var amount = cost*(dist)
-	if amount <= Controller.ap:
-		texture = load("res://Textures/cursor"+str(amount)+".png")
+	if 	amount <= Controller.ap:
+		if amount > 0:
+			texture = load("res://Textures/cursor"+str(amount)+".png")
+		else:
+			texture = load("res://Textures/cursor.png")
 	elif dist == 0:
 		texture = load("res://Textures/cursor.png")
 	else:
