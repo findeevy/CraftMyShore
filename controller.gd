@@ -187,16 +187,21 @@ func cycleTile():
 	elif init_array[mouse_tile_position.y][mouse_tile_position.x] > 0:
 		var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
 		if max_reach < mouse_tile_position.y:
-			for i in cur_moves.size():
-				if cur_moves[i][2] == mouse_tile_selected and cur_moves[i][4] == mouse_step:
-					mouse_tile_selected = cur_moves[i][3]
-					undo_move(i)
-					break
-			
 			var dist = abs(mouse_tile_position.y - mouse_tile_selected.y) + abs(mouse_tile_position.x - mouse_tile_selected.x)
 			var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 			
+			for i in cur_moves.size():
+				if cur_moves[i][2] == mouse_tile_selected and cur_moves[i][4] == mouse_step:
+					dist = abs(mouse_tile_position.y - cur_moves[i][3].y) + abs(mouse_tile_position.x - cur_moves[i][3].x)
+					if ap + cur_moves[i][0] + cur_moves[i][1] - dist * move_cost < 0:
+						mouse_step = 0
+						return
+					mouse_tile_selected = cur_moves[i][3]
+					undo_move(i)
+					break
+					
 			if ap - dist * move_cost < 0:
+				mouse_step = 0
 				return
 			ap -= dist * move_cost
 			
@@ -211,8 +216,10 @@ func cycleTile():
 			print("placed: ", tile_val)
 			
 func undo_move(move_index):
-	print(cur_moves)
-	var res = cur_moves.pop_at(move_index)
+	var res = cur_moves[move_index]
+	if tile_array[res[3].y][res[3].x] & res[4] > 0:
+		return
+	cur_moves.pop_at(move_index)
 	fill_ap_craft_indicator()
 	ap += res[0] * res[1]
 	tile_array[res[2].y][res[2].x] &= ~res[4]
