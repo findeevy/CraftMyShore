@@ -46,6 +46,18 @@ func _on_game_board_render():
 	if offset == 0:
 		clear_layer(3)
 		set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(1, 0))
+		for i in Controller.ap_craft_indicator.size():
+			if Controller.ap_craft_indicator[i] == null:
+				continue
+			match Controller.ap_craft_indicator[i][0]:
+				3:
+					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(0, 11 + i / 2))
+				2 when i < 4:
+					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 11 + i / 2))
+				2:
+					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10))
+				1:
+					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13))
 		notify_runtime_tile_data_update(3)
 	
 func _on_game_board_render_background():
