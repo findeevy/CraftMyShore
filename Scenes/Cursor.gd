@@ -1,9 +1,19 @@
 extends Sprite2D
 
 var TILE_SIZE = 64;
+var previous_game = "";
+var previous_game_text = "";
+var file_written = false;
+var file_exist = FileAccess.file_exists("res://previousGame.dat")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+
+	if file_exist:
+		previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
+	else:
+		FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
+		previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
 	z_index = 5
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -26,6 +36,15 @@ func _process(delta):
 		else:
 			modulate = Color(1, 1, 1)
 			texture = load("res://Textures/cursor.png")
+		#Create analysis file.
+		if (Controller.tick_counter < Controller.tick_array.size() - 1) == false and file_written == false :
+			previous_game_text=previous_game.get_as_text()+str(Controller.tile_array)+"\n"
+			var file = FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
+			file.store_string(previous_game_text)
+			previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
+			file_written=true
+			print("SAVED")
+
 func draw_cursor(cost):
 	var dist = abs(Controller.mouse_tile_position.y - Controller.mouse_tile_hover.y) + abs(Controller.mouse_tile_position.x - Controller.mouse_tile_hover.x)
 	var amount = cost*(dist)
