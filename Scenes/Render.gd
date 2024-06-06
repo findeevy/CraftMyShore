@@ -2,8 +2,19 @@ extends TileMap
 
 var offset = -1
 
+
+var previous_game = "";
+var previous_game_text = "";
+var file_written = false;
+var file_exist = FileAccess.file_exists("res://previousGame.dat")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if file_exist:
+		previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
+	else:
+		FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
+		previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
 	match name:
 		"TileMap":
 			offset = 0
@@ -16,6 +27,14 @@ func _ready():
 func _process(delta):
 	var mouse_position = get_global_mouse_position()
 	Controller.mouse_tile_hover = local_to_map(mouse_position)
+	
+	if (Controller.tick_counter < Controller.tick_array.size() - 1) == false and file_written == false and offset == 0:
+			previous_game_text=previous_game.get_as_text()+str(Controller.tile_array)+"\n"
+			var file = FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
+			file.store_string(previous_game_text)
+			previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
+			file_written=true
+			print("SAVED")
 
 func render_tree_waterlogged(r, c):
 	return Vector2i(1, 8) if Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)
