@@ -15,8 +15,6 @@ var trees_planted = 0
 var water_array = []
 var wrs = []
 
-var view_tick = 0
-
 var rng = RandomNumberGenerator.new()
 
 var is_paused = false;
@@ -41,7 +39,9 @@ var waters_to_break = []
 var pending_broken_waters = []
 var temp_water_break_move = null
 
+var game_ended = false
 var historical_game_states = []
+var view_tick = 0
 
 func load_array(file_name):
 	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
@@ -162,7 +162,7 @@ func count_adjacent_water_tiles(r, c):
 		waters_to_break.append([r, c + 1])
 
 func process_game_tick():
-	if tick_counter < tick_array.size() - 1:
+	if not game_ended:
 		mouse_step = 0
 		fill_ap_craft_indicator()
 		historical_game_states.append([tile_array.duplicate(true), wrs.duplicate(true), ap_craft_indicator.duplicate(true)])
@@ -188,14 +188,15 @@ func process_game_tick():
 			tile_array[winfo[0]][winfo[1]] &= ~4
 		pending_broken_waters = []
 		ap_craft_indicator.fill(null)
-		if tick_counter == tick_array.size():
+		if tick_counter == tick_array.size() - 1:
+			game_ended = true
 			historical_game_states.append([tile_array, wrs, ap_craft_indicator])
 			print("done; %d cities survived" % count_surviving_cities())
 	else:
 		print("done; %d cities survived" % count_surviving_cities())
 
 func view_historical_tick(tick):
-	print("viewing tick %d" % tick)
+	view_tick = tick
 	tile_array = historical_game_states[tick][0]
 	wrs = historical_game_states[tick][1]
 	ap_craft_indicator = historical_game_states[tick][2]
@@ -356,6 +357,8 @@ func undo_move(move_index):
 						tile_array[mov[2].y][mov[2].x] |= mov[4]
 
 func fill_ap_craft_indicator():
+	if game_ended:
+		return
 	ap_craft_indicator.fill(null)
 	var local_moves = range(cur_moves.size())
 	var ap_cost_info = Controller.get_hover_ap_cost()
