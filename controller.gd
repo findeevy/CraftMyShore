@@ -6,10 +6,20 @@ var tile_array = []
 var board_length = 0
 var board_height = 0
 
+var terrain_moved = 0
+var cities_moved = 0
+var trees_moved = 0
+
+var trees_planted = 0
+
 var water_array = []
 var wrs = []
 
+var view_tick = 0
+
 var rng = RandomNumberGenerator.new()
+
+var is_paused = false;
 
 var tick_counter = -1
 var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
@@ -123,6 +133,7 @@ func try_spawn_plants():
 			var max_reach = max(wrs[c][0], wrs[c][1]) - 1
 			if init_array[r][c] == 4 and tile_array[r][c] == 0 and max_reach < r:
 				tile_array[r][c] |= 4
+				trees_planted += 1
 
 func create_wave():
 	var col = get_flood_column()
@@ -162,6 +173,14 @@ func process_game_tick():
 		if tick_array[tick_counter] < 0:
 			try_spawn_plants()
 		ap = 6
+		for mov in cur_moves:
+			match mov[4]:
+				4:
+					trees_moved += 1
+				2:
+					cities_moved += 1
+				1:
+					terrain_moved += 1
 		cur_moves = []
 		for winfo in pending_broken_waters:
 			if winfo == null:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ct8347okhc2x6"]
+[gd_scene load_steps=12 format=3 uid="uid://ct8347okhc2x6"]
 
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="1_hifh2"]
 [ext_resource type="Script" path="res://Scenes/game_board.gd" id="1_ue4gq"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://Scenes/Selected.gd" id="6_jk5sf"]
 [ext_resource type="Texture2D" uid="uid://vfoqd27fy31y" path="res://Textures/introBackground.png" id="7_0blw3"]
 [ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="8_woynj"]
+[ext_resource type="Script" path="res://Scenes/EndScreen.gd" id="9_7tx4g"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qsj6d"]
 texture = ExtResource("1_hifh2")
@@ -62,6 +63,10 @@ texture_region_size = Vector2i(64, 64)
 0:23/0 = 0
 0:24/0 = 0
 1:24/0 = 0
+0:25/0 = 0
+1:25/0 = 0
+0:26/0 = 0
+1:26/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ylqfh"]
 tile_size = Vector2i(64, 64)
@@ -133,8 +138,10 @@ END TURN: SPAWN WAVES
 LEFT CLICK: SELECT
 RIGHT CLICK DESELECT
 -------------------------------"
+script = ExtResource("9_7tx4g")
 
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
 [connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
+[connection signal="render_end" from="InstructionBackground/Label" to="TileMap" method="_on_label_render_end"]
