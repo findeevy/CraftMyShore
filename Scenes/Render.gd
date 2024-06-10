@@ -2,7 +2,6 @@ extends TileMap
 
 var offset = -1
 
-
 var previous_game = "";
 var previous_game_text = "";
 var file_written = false;
@@ -27,14 +26,6 @@ func _ready():
 func _process(delta):
 	var mouse_position = get_global_mouse_position()
 	Controller.mouse_tile_hover = local_to_map(mouse_position)
-	
-	if (Controller.tick_counter < Controller.tick_array.size() - 1) == false and file_written == false and offset == 0:
-			previous_game_text=previous_game.get_as_text()+str(Controller.tile_array)+"\n"
-			var file = FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
-			file.store_string(previous_game_text)
-			previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
-			file_written=true
-			print("SAVED")
 
 func render_tree_waterlogged(r, c):
 	return Vector2i(1, 8) if Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)
@@ -67,21 +58,24 @@ func _on_game_board_render():
 	notify_runtime_tile_data_update(lr)
 	if offset == 0:
 		clear_layer(3)
-		set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(1, 0))
-		for i in Controller.ap_craft_indicator.size():
-			if Controller.ap_craft_indicator[i] == null:
-				continue
-			match Controller.ap_craft_indicator[i][0]:
-				3:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(0, 11 + i / 2))
-				2 when i < 4:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 11 + i / 2))
-				2:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10))
-				1:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13))
-		for water in Controller.waters_to_break:
-			set_cell(3, Vector2i(water[1], water[0]), 0, Vector2i(1, 0))
+		if Controller.tick_counter == Controller.tick_array.size() - 1:
+			set_cell(3, Vector2i(Controller.view_tick, r), 0, Vector2i(1, 0))
+		else:
+			set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(1, 0))
+			for i in Controller.ap_craft_indicator.size():
+				if Controller.ap_craft_indicator[i] == null:
+					continue
+				match Controller.ap_craft_indicator[i][0]:
+					3:
+						set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(0, 11 + i / 2))
+					2 when i < 4:
+						set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 11 + i / 2))
+					2:
+						set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10))
+					1:
+						set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13))
+			for water in Controller.waters_to_break:
+				set_cell(3, Vector2i(water[1], water[0]), 0, Vector2i(1, 0))
 		notify_runtime_tile_data_update(3)
 	
 func _on_game_board_render_background():
@@ -139,12 +133,24 @@ func _on_game_board_render_background():
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+1), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+2), 0, Vector2i(1, 1))
 		
-		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 9))
-		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 9))
-		
+		if Controller.tick_counter == Controller.tick_array.size() - 1:
+			if Controller.is_paused:
+				set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 25))
+				set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 26))
+			else:
+				set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 26))
+				set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 25))
+		else:
+			set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 9))
+			set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 9))
 		
 		notify_runtime_tile_data_update()
 func _input(event):
 	if Input.is_action_just_pressed("Click") and offset==0:
 		var mouse_position = get_global_mouse_position()
 		Controller.mouse_tile_position = local_to_map(mouse_position)
+
+
+func _on_label_render_end():
+	_on_game_board_render()
+	_on_game_board_render_background()
