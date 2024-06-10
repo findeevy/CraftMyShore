@@ -308,7 +308,7 @@ func undo_move(move_index):
 		water_array[col] += 1
 		wrs[col] = calculate_water_reach(col)
 		pending_broken_waters[res[5]] = null
-		
+
 		var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 		if max_reach < 0:
 			return

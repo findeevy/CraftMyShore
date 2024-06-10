@@ -84,7 +84,7 @@ func _on_game_board_render():
 			set_cell(3, Vector2i(water[1], water[0]), 0, Vector2i(1, 0))
 		notify_runtime_tile_data_update(3)
 
-func get_render_neighbors(r, c):
+func get_render_neighbors(r, c): # counter-clockwise from top
 	return [r > 0 and Controller.init_array[r-1][c]==0,
 			c > 0 and Controller.init_array[r][c-1]==0,
 			r < Controller.board_height - 1 and Controller.init_array[r+1][c]==0,
