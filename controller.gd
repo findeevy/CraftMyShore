@@ -24,6 +24,7 @@ var ap_start_c = 1
 var ap_start_r = 1
 var ap = 6
 var cur_moves = []
+var hover_move = null
 var ap_craft_indicator = [null, null, null, null, null, null]
 
 var waters_to_break = []
@@ -151,6 +152,8 @@ func count_adjacent_water_tiles(r, c):
 
 func process_game_tick():
 	if tick_counter < tick_array.size() - 1:
+		mouse_step = 0
+		fill_ap_craft_indicator()
 		historical_game_states.append([tile_array.duplicate(true), wrs.duplicate(true), ap_craft_indicator.duplicate(true)])
 		tick_counter += 1
 		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
@@ -166,7 +169,6 @@ func process_game_tick():
 			tile_array[winfo[0]][winfo[1]] &= ~4
 		pending_broken_waters = []
 		ap_craft_indicator.fill(null)
-		mouse_step = 0
 		if tick_counter == tick_array.size():
 			historical_game_states.append([tile_array, wrs, ap_craft_indicator])
 			print("done; %d cities survived" % count_surviving_cities())
@@ -201,14 +203,17 @@ func get_next_tile_cycle(td, cur_step):
 			return 1
 	
 func get_hover_ap_cost():
-	if mouse_step == 0:
+	if mouse_step == 0 or mouse_tile_hover.x >= board_length or mouse_tile_hover.y >= board_height:
+		hover_move = null
 		return Vector2i(0, 0)
 	var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 	for c in cur_moves:
 		if c[2] == mouse_tile_selected and c[4] == mouse_step:
 			var dist = abs(mouse_tile_hover.y - c[3].y) + abs(mouse_tile_hover.x - c[3].x)
+			hover_move = [move_cost, dist, mouse_tile_hover, c[3], mouse_step, 0]
 			return Vector2i(dist * move_cost, c[0] * c[1])
 	var dist = abs(mouse_tile_position.y - mouse_tile_hover.y) + abs(mouse_tile_position.x - mouse_tile_hover.x)
+	hover_move = [move_cost, dist, mouse_tile_hover, mouse_tile_position, mouse_step, 0]
 	return Vector2i(dist * move_cost, 0)
 
 func try_do_move():
@@ -253,7 +258,6 @@ func try_do_move():
 		
 		if dist > 0:
 			cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step, water_will_break])
-			fill_ap_craft_indicator()
 		
 			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
 			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
@@ -283,7 +287,7 @@ func process_water_break(r, c):
 	waters_to_break = []
 	
 	cur_moves.append(temp_water_break_move)
-	fill_ap_craft_indicator()
+	temp_water_break_move = null
 
 func is_tile_watterlogged(r, c):
 	for wmv in pending_broken_waters:
@@ -296,7 +300,6 @@ func undo_move(move_index):
 	if tile_array[res[3].y][res[3].x] & res[4] > 0:
 		return
 	cur_moves.pop_at(move_index)
-	fill_ap_craft_indicator()
 	ap += res[0] * res[1]
 	tile_array[res[2].y][res[2].x] &= ~res[4]
 	tile_array[res[3].y][res[3].x] |= res[4]
@@ -335,9 +338,24 @@ func undo_move(move_index):
 
 func fill_ap_craft_indicator():
 	ap_craft_indicator.fill(null)
-	cur_moves.sort_custom(func(a, b): return a[0] > b[0] if a[0] != b[0] else a[1] > b[1])
-	for i in cur_moves.size():
-		var val = cur_moves[i]
+	var local_moves = range(cur_moves.size())
+	var ap_cost_info = Controller.get_hover_ap_cost()
+	var ap_cost = ap_cost_info[0]
+	var ap_already = ap_cost_info[1]
+	if hover_move:
+		local_moves.append(-1)
+	if temp_water_break_move:
+		local_moves.append(-2)
+	local_moves.sort_custom(func(ia, ib):
+		var a = hover_move if ia == -1 else temp_water_break_move if ia == -2 else cur_moves[ia]
+		var b = hover_move if ib == -1 else temp_water_break_move if ib == -2 else cur_moves[ib]
+		return a[0] > b[0] if a[0] != b[0] else a[1] > b[1])
+	for i in local_moves:
+		var val = hover_move if i == -1 else temp_water_break_move if i == -2 else cur_moves[i]
+		if hover_move and i >= 0 and val[3] == hover_move[3] and val[4] == hover_move[4]:
+			continue
+		if i == -1 and (ap + ap_already < ap_cost or val[1] == 0):
+			continue
 		match val[0]:
 			3:
 				if ap_craft_indicator[0] != null or val[1] > 1:
