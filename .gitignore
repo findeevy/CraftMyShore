@@ -26,3 +26,4 @@ mono_crash.*.json
 
 #Web Builds
 *Web/
+previousGame.dat
