@@ -87,6 +87,7 @@ layer_1/tile_data = PackedInt32Array()
 layer_2/tile_data = PackedInt32Array()
 layer_3/z_index = 5
 layer_3/tile_data = PackedInt32Array()
+layer_4/tile_data = PackedInt32Array()
 script = ExtResource("3_kapad")
 
 [node name="TileMap2" type="TileMap" parent="."]
@@ -109,10 +110,13 @@ script = ExtResource("3_kapad")
 position = Vector2(1.84241, 3.30222)
 texture = ExtResource("4_o74fj")
 centered = false
+vframes = 8
 script = ExtResource("5_b3uew")
 
 [node name="Selected" type="Sprite2D" parent="."]
+texture = ExtResource("4_o74fj")
 centered = false
+vframes = 8
 script = ExtResource("6_jk5sf")
 
 [node name="InstructionBackground" type="Sprite2D" parent="."]
