@@ -335,7 +335,7 @@ func undo_move(move_index):
 
 func fill_ap_craft_indicator():
 	ap_craft_indicator.fill(null)
-	cur_moves.sort_custom(func(a, b): return a[0] * a[1] > b[0] * b[1])
+	cur_moves.sort_custom(func(a, b): return a[0] > b[0] if a[0] != b[0] else a[1] > b[1])
 	for i in cur_moves.size():
 		var val = cur_moves[i]
 		match val[0]:

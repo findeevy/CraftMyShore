@@ -6,7 +6,6 @@ var TILE_SIZE=64
 func _ready():
 	z_index = 4
 	frame = 0
-	modulate = Color(0,0,0)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -15,12 +14,12 @@ func _process(delta):
 		visible = true
 		position = Controller.mouse_tile_selected * TILE_SIZE
 		if Controller.mouse_step == 4:
-			modulate = Color(0.11764, 0.43529, 0.31372)
+			modulate = Colors.PLANT
 		elif Controller.mouse_step == 2:
-			modulate = Color(0.91764, 0.196078, 0.23529)
+			modulate = Colors.CITY
 		elif Controller.mouse_step == 1:
-			modulate = Color(1, 0.63529, 0.078431)
+			modulate = Colors.HILL
 		else:
-			modulate = Color(1, 1, 1)
+			modulate = Colors.NONE
 	else:
 		visible = false

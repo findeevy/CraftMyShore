@@ -23,18 +23,18 @@ func _process(delta):
 		var ap_already = ap_cost_info[1]
 		frame = 7 if ap_cost > Controller.ap + ap_already else ap_cost
 		if Controller.mouse_step == 4:
-			modulate = Color(0.11764, 0.43529, 0.31372)
+			modulate = Colors.PLANT
 		elif Controller.mouse_step == 2:
-			modulate = Color(0.91764, 0.196078, 0.23529)
+			modulate = Colors.CITY
 		elif Controller.mouse_step == 1:
-			modulate = Color(1, 0.63529, 0.078431)
+			modulate = Colors.HILL
 		else:
 			match Controller.tile_array[Controller.mouse_tile_hover.y][Controller.mouse_tile_hover.x]:
 				4:
-					modulate = Color(0.11764, 0.43529, 0.31372)
+					modulate = Colors.PLANT
 				2:
-					modulate = Color(0.91764, 0.196078, 0.23529)
+					modulate = Colors.CITY
 				1:
-					modulate = Color(1, 0.63529, 0.078431)
+					modulate = Colors.HILL
 				_:
-					modulate = Color(1, 1, 1)
+					modulate = Colors.NONE
