@@ -91,7 +91,40 @@ func _on_game_board_render_background():
 		for rd in Controller.init_array:
 			var c = 0
 			for cd in rd:
-				set_cell(0, Vector2i(c, r), 0, Vector2i(0, cd + 4))
+				if cd == 0:
+					set_cell(0, Vector2i(c, r), 0, Vector2i(0, 4))
+				else:
+					if c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r-1][c]==0 and c <= Controller.board_height and Controller.init_array[r][c+1]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 23))
+					elif c <= Controller.board_height and Controller.init_array[r][c+1]==0 and r > 0 and Controller.init_array[r-1][c]==0 and r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 24))
+					elif c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r+1][c]==0 and c <= Controller.board_height and Controller.init_array[r][c+1]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 23))
+					elif c < Controller.board_height and Controller.init_array[r][c-1]==0 and r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0 and  r > 0 and Controller.init_array[r+1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 24))
+					elif c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r-1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 18))
+					elif c <= Controller.board_height and Controller.init_array[r][c+1]==0 and r > 0 and Controller.init_array[r-1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 18))
+					elif c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r+1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 19))
+					elif c < Controller.board_height and Controller.init_array[r][c+1]==0 and r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 19))
+					elif r > 0 and Controller.init_array[r-1][c]==0 and  r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 22))
+					elif c > 0 and Controller.init_array[r][c-1]==0 and c < Controller.board_height and Controller.init_array[r][c+1]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 22))
+					elif c > 0 and Controller.init_array[r][c-1]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 20))
+					elif c < Controller.board_height and Controller.init_array[r][c+1]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 20))
+					#not sure why this requires a "-3", board_length seems to be working alright?
+					elif r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 21))
+					elif r > 0 and Controller.init_array[r-1][c]==0:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 21))
+					else:
+						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 5))
 				c+=1
 			r+=1
 		for c in Controller.tick_array.size():
