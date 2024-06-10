@@ -96,7 +96,7 @@ func get_land_render_tile(neighbors):
 	match neighbors:
 		[true, true, true, true]:
 			return Vector2i(0, 6)
-			
+
 		[true, true, false, true]:
 			return Vector2i(1, 23)
 		[true, true, true, false]:
@@ -127,7 +127,7 @@ func get_land_render_tile(neighbors):
 			return Vector2i(1, 21)
 		[true, false, false, false]:
 			return Vector2i(0, 21)
-			
+
 		[false, false, false, false]:
 			return Vector2i(0, 5)
 
@@ -156,7 +156,7 @@ func _on_game_board_render_background():
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+1), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+2), 0, Vector2i(1, 1))
-	
+
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
 			if Controller.is_paused:
 				set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 25))

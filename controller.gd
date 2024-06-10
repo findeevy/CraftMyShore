@@ -93,7 +93,7 @@ func calculate_water_reach(col):
 		else:
 			reach += 1
 	return [reach, high_reach]
-			
+
 func check_grass_absorb(col): # this just checks if grass absorbs a single new water tile; grass tile movement should go somewhere else
 	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 	if max_reach < 0:
@@ -113,7 +113,7 @@ func check_grass_absorb(col): # this just checks if grass absorbs a single new w
 		tile_array[max_reach][col+1] &= ~4
 		print("col %d destroyed grass right" % col)
 		wrs[col] = calculate_water_reach(col)
-	
+
 func check_destroy_city(col):
 	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 	if max_reach < 0:
@@ -121,12 +121,12 @@ func check_destroy_city(col):
 	if tile_array[max_reach][col] & 2 > 0:
 		tile_array[max_reach][col] &= ~2
 		print("col %d destroyed city" % col)
-		
+
 func get_flood_column():
 	if board_length == 11:
 		return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2
 	return rng.randi_range(0, board_length - 1)
-		
+
 func try_spawn_plants():
 	for r in board_height:
 		for c in board_length:
@@ -221,7 +221,7 @@ func get_next_tile_cycle(td, cur_step):
 			return 4
 		1:
 			return 1
-	
+
 func get_hover_ap_cost():
 	if mouse_step == 0 or mouse_tile_hover.x >= board_length or mouse_tile_hover.y >= board_height:
 		hover_move = null
@@ -242,7 +242,7 @@ func try_do_move():
 	if max_reach < mouse_tile_position.y:
 		var dist = abs(mouse_tile_position.y - mouse_tile_selected.y) + abs(mouse_tile_position.x - mouse_tile_selected.x)
 		var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
-		
+
 		for i in cur_moves.size():
 			if cur_moves[i][2] == mouse_tile_selected and cur_moves[i][4] == mouse_step:
 				dist = abs(mouse_tile_position.y - cur_moves[i][3].y) + abs(mouse_tile_position.x - cur_moves[i][3].x)
@@ -252,12 +252,12 @@ func try_do_move():
 				mouse_tile_selected = cur_moves[i][3]
 				undo_move(i)
 				break
-				
+
 		if ap - dist * move_cost < 0:
 			mouse_step = 0
 			return
 		ap -= dist * move_cost
-		
+
 		var water_will_break = -1
 		if mouse_step == 4:
 			count_adjacent_water_tiles(mouse_tile_position.y, mouse_tile_position.x)
@@ -275,13 +275,13 @@ func try_do_move():
 				tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
 				mouse_step = 0
 				return
-		
+
 		if dist > 0:
 			cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step, water_will_break])
-		
+
 			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
 			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
-		
+
 		mouse_step = 0;
 
 func cycleTile():
@@ -302,10 +302,10 @@ func cycleTile():
 func process_water_break(r, c):
 	water_array[c] -= 1
 	wrs[c] = calculate_water_reach(c)
-	
+
 	pending_broken_waters.append([temp_water_break_move[2].y, temp_water_break_move[2].x, r, c])
 	waters_to_break = []
-	
+
 	cur_moves.append(temp_water_break_move)
 	temp_water_break_move = null
 
@@ -339,7 +339,7 @@ func undo_move(move_index):
 			check_tile = Vector2i(col-1, max_reach)
 		elif col < board_length-1 and tile_array[max_reach][col+1] & 4 > 0 and not is_tile_watterlogged(max_reach, col+1):
 			check_tile = Vector2i(col+1, max_reach)
-		
+
 		if check_tile:
 			for i in cur_moves.size():
 				cur_moves[i][5] = pending_broken_waters.size()
@@ -407,4 +407,3 @@ func fill_ap_craft_indicator():
 							if ap_craft_indicator[c + 2 * r] == null and not filled:
 								ap_craft_indicator[c + 2 * r] = [1, i]
 								filled = true
-						

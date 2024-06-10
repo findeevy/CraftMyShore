@@ -13,7 +13,7 @@ func _ready():
 func _process(delta):
 	if Controller.game_ended:
 		self.text = "DONE!\nCITIES LEFT: %d\nTREES PLANTED: %d\nCITIES MOVED: %d\nTREES MOVED: %d\nTERRAIN MOVED: %d" % [Controller.count_surviving_cities(), Controller.trees_planted, Controller.cities_moved, Controller.trees_moved, Controller.terrain_moved]
-		
+
 		if !Controller.is_paused:
 			end_timer -= delta
 			if end_timer < 0:

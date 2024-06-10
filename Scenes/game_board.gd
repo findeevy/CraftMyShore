@@ -7,10 +7,10 @@ func _ready():
 	Controller.load_array("map.dat")
 	render.emit()
 	render_background.emit()
-	
+
 func _process(delta):
 	pass
-	
+
 func _input(event):
 	if Input.is_action_just_pressed("Click"):
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
