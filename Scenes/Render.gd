@@ -25,16 +25,28 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var mouse_position = get_global_mouse_position()
-	Controller.mouse_tile_hover = local_to_map(mouse_position)
-	
-	if (Controller.tick_counter < Controller.tick_array.size() - 1) == false and file_written == false and offset == 0:
-			previous_game_text=previous_game.get_as_text()+str(Controller.tile_array)+"\n"
-			var file = FileAccess.open("res://previousGame.dat", FileAccess.WRITE)
-			file.store_string(previous_game_text)
-			previous_game=FileAccess.open("res://previousGame.dat", FileAccess.READ)
-			file_written=true
-			print("SAVED")
+	if offset == 0:
+		var mouse_position = get_global_mouse_position()
+		Controller.mouse_tile_hover = local_to_map(mouse_position)
+		render_ap_crafter()
+
+func render_ap_crafter():
+	Controller.fill_ap_craft_indicator()
+	clear_layer(4)
+	for i in Controller.ap_craft_indicator.size():
+		if Controller.ap_craft_indicator[i] == null:
+			continue
+		var blink = 4 if Controller.ap_craft_indicator[i][1] < 0 else 0
+		match Controller.ap_craft_indicator[i][0]:
+			3:
+				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(0, 11 + i / 2 + blink))
+			2 when i < 4:
+				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 11 + i / 2 + blink))
+			2:
+				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10 + blink))
+			1:
+				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13 + blink))
+	notify_runtime_tile_data_update(4)
 
 func render_tree_waterlogged(r, c):
 	return Vector2i(1, 8) if Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)
@@ -68,22 +80,55 @@ func _on_game_board_render():
 	if offset == 0:
 		clear_layer(3)
 		set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(1, 0))
-		for i in Controller.ap_craft_indicator.size():
-			if Controller.ap_craft_indicator[i] == null:
-				continue
-			match Controller.ap_craft_indicator[i][0]:
-				3:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(0, 11 + i / 2))
-				2 when i < 4:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 11 + i / 2))
-				2:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10))
-				1:
-					set_cell(3, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13))
 		for water in Controller.waters_to_break:
 			set_cell(3, Vector2i(water[1], water[0]), 0, Vector2i(1, 0))
 		notify_runtime_tile_data_update(3)
-	
+
+func get_render_neighbors(r, c): # counter-clockwise from top
+	return [r > 0 and Controller.init_array[r-1][c]==0,
+			c > 0 and Controller.init_array[r][c-1]==0,
+			r < Controller.board_height - 1 and Controller.init_array[r+1][c]==0,
+			c < Controller.board_length - 1 and Controller.init_array[r][c+1]==0]
+
+func get_land_render_tile(neighbors):
+	match neighbors:
+		[true, true, true, true]:
+			return Vector2i(0, 6)
+			
+		[true, true, false, true]:
+			return Vector2i(1, 23)
+		[true, true, true, false]:
+			return Vector2i(1, 24)
+		[false, true, true, true]:
+			return Vector2i(0, 23)
+		[true, false, true, true]:
+			return Vector2i(0, 24)
+
+		[true, true, false, false]:
+			return Vector2i(0, 18)
+		[true, false, false, true]:
+			return Vector2i(1, 18)
+		[false, true, true, false]:
+			return Vector2i(0, 19)
+		[false, false, true, true]:
+			return Vector2i(1, 19)
+		[true, false, true, false]:
+			return Vector2i(0, 22)
+		[false, true, false, true]:
+			return Vector2i(1, 22)
+
+		[false, true, false, false]:
+			return Vector2i(0, 20)
+		[false, false, false, true]:
+			return Vector2i(1, 20)
+		[false, false, true, false]:
+			return Vector2i(1, 21)
+		[true, false, false, false]:
+			return Vector2i(0, 21)
+			
+		[false, false, false, false]:
+			return Vector2i(0, 5)
+
 func _on_game_board_render_background():
 	if offset == 0:
 		clear_layer(0)
@@ -91,58 +136,29 @@ func _on_game_board_render_background():
 		for rd in Controller.init_array:
 			var c = 0
 			for cd in rd:
-				if cd == 0:
-					set_cell(0, Vector2i(c, r), 0, Vector2i(0, 4))
+				if cd == 0 or cd == 4:
+					set_cell(0, Vector2i(c, r), 0, Vector2i(0, cd + 4))
 				else:
-					if c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r-1][c]==0 and c <= Controller.board_height and Controller.init_array[r][c+1]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 23))
-					elif c <= Controller.board_height and Controller.init_array[r][c+1]==0 and r > 0 and Controller.init_array[r-1][c]==0 and r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 24))
-					elif c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r+1][c]==0 and c <= Controller.board_height and Controller.init_array[r][c+1]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 23))
-					elif c < Controller.board_height and Controller.init_array[r][c-1]==0 and r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0 and  r > 0 and Controller.init_array[r+1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 24))
-					elif c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r-1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 18))
-					elif c <= Controller.board_height and Controller.init_array[r][c+1]==0 and r > 0 and Controller.init_array[r-1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 18))
-					elif c > 0 and Controller.init_array[r][c-1]==0 and r > 0 and Controller.init_array[r+1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 19))
-					elif c < Controller.board_height and Controller.init_array[r][c+1]==0 and r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 19))
-					elif r > 0 and Controller.init_array[r-1][c]==0 and  r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 22))
-					elif c > 0 and Controller.init_array[r][c-1]==0 and c < Controller.board_height and Controller.init_array[r][c+1]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 22))
-					elif c > 0 and Controller.init_array[r][c-1]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 20))
-					elif c < Controller.board_height and Controller.init_array[r][c+1]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 20))
-					#not sure why this requires a "-3", board_length seems to be working alright?
-					elif r < Controller.board_length - 3 and Controller.init_array[r+1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(1, 21))
-					elif r > 0 and Controller.init_array[r-1][c]==0:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 21))
-					else:
-						set_cell(0, Vector2i(c, r), 0, Vector2i(0, 5))
+					var tl = get_land_render_tile(get_render_neighbors(r, c))
+					set_cell(0, Vector2i(c, r), 0, tl)
 				c+=1
 			r+=1
 		for c in Controller.tick_array.size():
 			set_cell(0, Vector2i(c, r), 0, Vector2i(1, abs(Controller.tick_array[c]) + 1))
 			if Controller.tick_array[c] < 0:
 				set_cell(2, Vector2i(c, r), 0, Vector2i(1, 7))
-				
+
 		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+1), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+2), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+1), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+2), 0, Vector2i(1, 1))
-		
+
 		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 9))
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 9))
-		
-		
+
+
 		notify_runtime_tile_data_update()
 func _input(event):
 	if Input.is_action_just_pressed("Click") and offset==0:
