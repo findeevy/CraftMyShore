@@ -199,6 +199,17 @@ func get_next_tile_cycle(td, cur_step):
 			return 4
 		1:
 			return 1
+	
+func get_hover_ap_cost():
+	if mouse_step == 0:
+		return Vector2i(0, 0)
+	var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
+	for c in cur_moves:
+		if c[2] == mouse_tile_selected and c[4] == mouse_step:
+			var dist = abs(mouse_tile_hover.y - c[3].y) + abs(mouse_tile_hover.x - c[3].x)
+			return Vector2i(dist * move_cost, c[0] * c[1])
+	var dist = abs(mouse_tile_position.y - mouse_tile_hover.y) + abs(mouse_tile_position.x - mouse_tile_hover.x)
+	return Vector2i(dist * move_cost, 0)
 
 func try_do_move():
 	var tile_val = tile_array[mouse_tile_position.y][mouse_tile_position.x]
@@ -324,7 +335,7 @@ func undo_move(move_index):
 
 func fill_ap_craft_indicator():
 	ap_craft_indicator.fill(null)
-	cur_moves.sort_custom(func(a, b): return a[0] * a[1] > b[0] * b[1])
+	cur_moves.sort_custom(func(a, b): return a[0] > b[0] if a[0] != b[0] else a[1] > b[1])
 	for i in cur_moves.size():
 		var val = cur_moves[i]
 		match val[0]:

@@ -18,6 +18,7 @@ config/icon="res://logo.png"
 [autoload]
 
 Controller="*res://controller.gd"
+Colors="*res://colors.gd"
 
 [display]
 

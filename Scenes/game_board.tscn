@@ -104,10 +104,13 @@ script = ExtResource("3_kapad")
 position = Vector2(1.84241, 3.30222)
 texture = ExtResource("4_o74fj")
 centered = false
+vframes = 8
 script = ExtResource("5_b3uew")
 
 [node name="Selected" type="Sprite2D" parent="."]
+texture = ExtResource("4_o74fj")
 centered = false
+vframes = 8
 script = ExtResource("6_jk5sf")
 
 [node name="InstructionBackground" type="Sprite2D" parent="."]
