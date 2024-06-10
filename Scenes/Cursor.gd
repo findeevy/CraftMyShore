@@ -12,42 +12,29 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Controller.mouse_tile_hover.x > Controller.board_length - 1 or Controller.mouse_tile_hover.y > Controller.board_height - 1:
-		position=get_global_mouse_position()
+	if Controller.mouse_tile_hover.x >= Controller.board_length or Controller.mouse_tile_hover.y >= Controller.board_height:
+		position = get_global_mouse_position()
 		visible = false
 	else:
-		position=Controller.mouse_tile_hover*TILE_SIZE
+		position = Controller.mouse_tile_hover * TILE_SIZE
 		visible = true
-		if(Controller.mouse_step==4):
+		var ap_cost_info = Controller.get_hover_ap_cost()
+		var ap_cost = ap_cost_info[0]
+		var ap_already = ap_cost_info[1]
+		frame = 7 if ap_cost > Controller.ap + ap_already else ap_cost
+		if Controller.mouse_step == 4:
 			modulate = Color(0.11764, 0.43529, 0.31372)
-			draw_cursor(1)
-		elif(Controller.mouse_step==2):
+		elif Controller.mouse_step == 2:
 			modulate = Color(0.91764, 0.196078, 0.23529)
-			draw_cursor(3)
-		elif(Controller.mouse_step==1):
+		elif Controller.mouse_step == 1:
 			modulate = Color(1, 0.63529, 0.078431)
-			draw_cursor(2)
 		else:
-			texture = load("res://Textures/cursor.png")
-			var type_picked = Controller.tile_array[Controller.mouse_tile_hover.y][Controller.mouse_tile_hover.x]
-			if (type_picked==4):
-				modulate = Color(0.11764, 0.43529, 0.31372)
-			elif(type_picked==2):
-				modulate = Color(0.91764, 0.196078, 0.23529)
-			elif(type_picked==1):
-				modulate = Color(1, 0.63529, 0.078431)
-			else:
-				modulate = Color(1, 1, 1)
-
-func draw_cursor(cost):
-	var dist = abs(Controller.mouse_tile_position.y - Controller.mouse_tile_hover.y) + abs(Controller.mouse_tile_position.x - Controller.mouse_tile_hover.x)
-	var amount = cost*(dist)
-	if 	amount <= Controller.ap:
-		if amount > 0:
-			texture = load("res://Textures/cursor"+str(amount)+".png")
-		else:
-			texture = load("res://Textures/cursor.png")
-	elif dist == 0:
-		texture = load("res://Textures/cursor.png")
-	else:
-		texture = load("res://Textures/cursorNo.png")
+			match Controller.tile_array[Controller.mouse_tile_hover.y][Controller.mouse_tile_hover.x]:
+				4:
+					modulate = Color(0.11764, 0.43529, 0.31372)
+				2:
+					modulate = Color(0.91764, 0.196078, 0.23529)
+				1:
+					modulate = Color(1, 0.63529, 0.078431)
+				_:
+					modulate = Color(1, 1, 1)
