@@ -23,3 +23,6 @@ mono_crash.*.json
 
 # Saved Game Data
 *previousGame.dat
+
+#Web Builds
+*Web/
