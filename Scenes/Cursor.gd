@@ -21,7 +21,7 @@ func _process(delta):
 		var ap_cost_info = Controller.get_hover_ap_cost()
 		var ap_cost = ap_cost_info[0]
 		var ap_already = ap_cost_info[1]
-		frame = 7 if ap_cost > Controller.ap + ap_already else ap_cost
+		frame = 7 if ap_cost > Controller.ap + ap_already or ap_cost < 0 else ap_cost
 		if Controller.mouse_step == 4:
 			modulate = Colors.PLANT
 		elif Controller.mouse_step == 2:

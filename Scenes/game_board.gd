@@ -51,3 +51,4 @@ func _input(event):
 			render.emit()
 		else:
 			Controller.mouse_step = 0
+			Controller.pathfind_update_flag = 0
