@@ -29,6 +29,6 @@ func _process(delta):
 
 func _input(event):
 	if  Controller.tick_counter == Controller.tick_array.size() - 1 and !game_ended:
-		self.text = "DONE!\nCITIES LEFT: %d\nTREES PLANTED: %d\nCITIES MOVED: %d\nTREES MOVED: %d\nTERRAIN MOVED: %d" % [Controller.count_surviving_cities(), Controller.trees_planted, Controller.cities_moved, Controller.trees_moved, Controller._moved]
+		self.text = "DONE!\nCITIES LEFT: %d\nTREES PLANTED: %d\nCITIES MOVED: %d\nTREES MOVED: %d\nTERRAIN MOVED: %d" % [Controller.count_surviving_cities(), Controller.trees_planted, Controller.cities_moved, Controller.trees_moved, Controller.terrain_moved]
 		end_timer = 1.0
 		game_ended = true
