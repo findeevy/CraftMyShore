@@ -90,11 +90,11 @@ func load_array(file_name):
 	Controller.wrs.resize(Controller.board_length)
 	Controller.wrs.fill([0,0])
   
-  astar_grid.region = Rect2i(0, 0, Controller.board_length, Controller.board_height)
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
-	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.update()
+	Controller.astar_grid.region = Rect2i(0, 0, Controller.board_length, Controller.board_height)
+	Controller.astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	Controller.astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	Controller.astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	Controller.astar_grid.update()
   
 	Controller.ap_start_c = Controller.board_length + 2
 	process_game_tick()
