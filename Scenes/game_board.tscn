@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://ct8347okhc2x6"]
+[gd_scene load_steps=38 format=3 uid="uid://ct8347okhc2x6"]
 
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="1_hifh2"]
 [ext_resource type="Script" path="res://Scenes/game_board.gd" id="1_ue4gq"]
@@ -12,6 +12,19 @@
 [ext_resource type="Texture2D" uid="uid://cygsy7yettfu4" path="res://Textures/vegtableFlood.png" id="10_mjmsb"]
 [ext_resource type="Texture2D" uid="uid://dn25ldvq2mwv" path="res://Textures/cityFlood.png" id="11_1cni1"]
 [ext_resource type="Script" path="res://Scenes/FloodPlayerScript.gd" id="11_p3ihw"]
+[ext_resource type="AudioStream" path="res://Audio/sand.wav" id="10_kbbn5"]
+[ext_resource type="AudioStream" path="res://Audio/building.wav" id="10_kqlpg"]
+[ext_resource type="AudioStream" uid="uid://v3ed0igtt2wt" path="res://Audio/click.mp3" id="10_r4t3a"]
+[ext_resource type="Script" path="res://Scenes/SandSound.gd" id="11_15cmx"]
+[ext_resource type="Script" path="res://Scenes/clickSound.gd" id="11_qtx7e"]
+[ext_resource type="Script" path="res://Scenes/BuildingSound.gd" id="11_sam78"]
+[ext_resource type="AudioStream" path="res://Audio/waves.wav" id="12_1lecp"]
+[ext_resource type="AudioStream" path="res://Audio/city.wav" id="12_1liix"]
+[ext_resource type="AudioStream" path="res://Audio/mountain.wav" id="12_pvi0m"]
+[ext_resource type="Script" path="res://Scenes/CitySound.gd" id="13_7m6b6"]
+[ext_resource type="Script" path="res://Scenes/MountainSound.gd" id="13_jb7nt"]
+[ext_resource type="Script" path="res://Scenes/TreeSound.gd" id="21_txjv4"]
+[ext_resource type="AudioStream" path="res://Audio/treeQuiet.wav" id="21_ylm0i"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qsj6d"]
 texture = ExtResource("1_hifh2")
@@ -315,10 +328,61 @@ autoplay = "city"
 offset = Vector2(32, 32)
 script = ExtResource("11_p3ihw")
 
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="BuildingSound" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("10_kqlpg")
+volume_db = -3.021
+pitch_scale = 1.25
+script = ExtResource("11_sam78")
+
+[node name="CitySound" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("12_1liix")
+volume_db = -4.684
+pitch_scale = 0.75
+script = ExtResource("13_7m6b6")
+
+[node name="MountainSound" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("12_pvi0m")
+volume_db = 6.559
+script = ExtResource("13_jb7nt")
+
+[node name="SandSound" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("10_kbbn5")
+volume_db = 6.559
+script = ExtResource("11_15cmx")
+
+[node name="Click" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("10_r4t3a")
+volume_db = 6.559
+script = ExtResource("11_qtx7e")
+
+[node name="Wave" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("12_1lecp")
+volume_db = -9.421
+autoplay = true
+
+[node name="TreeSound" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("21_ylm0i")
+volume_db = 6.559
+script = ExtResource("21_txjv4")
+
+[connection signal="city_destroy" from="." to="AudioListener2D/BuildingSound" method="_on_game_board_city_destroy"]
+[connection signal="city_move" from="." to="AudioListener2D/CitySound" method="_on_game_board_city_move"]
+[connection signal="mountain_move" from="." to="AudioListener2D/MountainSound" method="_on_game_board_mountain_move"]
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
 [connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
+[connection signal="tree_move" from="." to="AudioListener2D/TreeSound" method="_on_game_board_tree_move"]
+[connection signal="tree_plant" from="." to="AudioListener2D/SandSound" method="_on_game_board_tree_plant"]
 [connection signal="render_end" from="InstructionBackground/Label" to="TileMap" method="_on_label_render_end"]
 [connection signal="animation_finished" from="TreeAnimatedSprite" to="TreeAnimatedSprite" method="_on_animation_finished"]
 [connection signal="animation_finished" from="CityAnimatedSprite" to="CityAnimatedSprite" method="_on_animation_finished"]

@@ -47,47 +47,6 @@ var game_ended = false
 var historical_game_states = []
 var view_tick = 0
 
-func load_array(file_name):
-	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
-	while f.get_position() < f.get_length():
-		var l = f.get_line()
-		var id = []
-		var td = []
-		for c in l:
-			match c:
-				"l":
-					id.append(1)
-					td.append(0)
-				"c":
-					id.append(2)
-					td.append(2)
-				"w":
-					id.append(0)
-					td.append(0)
-				"v":
-					id.append(4)
-					td.append(4)
-				"t":
-					id.append(3)
-					td.append(1)
-		init_array.append(id)
-		tile_array.append(td)
-	board_length = init_array[0].size()
-	board_height = init_array.size()
-	water_array.resize(board_length)
-	water_array.fill(0)
-	wrs.resize(board_length)
-	wrs.fill([0,0])
-	
-	astar_grid.region = Rect2i(0, 0, board_length, board_height)
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
-	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.update()
-	
-	ap_start_c = board_length + 2
-	process_game_tick()
-
 func calculate_water_reach(col):
 	var vol = water_array[col]
 	var reach = 0
@@ -125,33 +84,10 @@ func check_grass_absorb(col): # this just checks if grass absorbs a single new w
 		print("col %d destroyed grass right" % col)
 		wrs[col] = calculate_water_reach(col)
 
-func check_destroy_city(col):
-	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
-	if max_reach < 0:
-		return
-	if tile_array[max_reach][col] & 2 > 0:
-		tile_array[max_reach][col] &= ~2
-		print("col %d destroyed city" % col)
-
 func get_flood_column():
 	if board_length == 11:
 		return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2
 	return rng.randi_range(0, board_length - 1)
-
-func try_spawn_plants():
-	for r in board_height:
-		for c in board_length:
-			var max_reach = max(wrs[c][0], wrs[c][1]) - 1
-			if init_array[r][c] == 4 and tile_array[r][c] == 0 and max_reach < r:
-				tile_array[r][c] |= 4
-				trees_planted += 1
-
-func create_wave():
-	var col = get_flood_column()
-	water_array[col] += 1
-	wrs[col] = calculate_water_reach(col)
-	check_grass_absorb(col)
-	check_destroy_city(col)
 
 func count_surviving_cities():
 	var city_count = 0
@@ -171,41 +107,6 @@ func count_adjacent_water_tiles(r, c):
 		waters_to_break.append([r, c - 1])
 	if c < board_length - 1 and max(wrs[c + 1][0], wrs[c + 1][1]) - 1 >= r:
 		waters_to_break.append([r, c + 1])
-
-func process_game_tick():
-	if not game_ended:
-		mouse_step = 0
-		fill_ap_craft_indicator()
-		historical_game_states.append([tile_array.duplicate(true), wrs.duplicate(true), ap_craft_indicator.duplicate(true)])
-		tick_counter += 1
-		print("flooding %d%s" % [abs(tick_array[tick_counter]), ", try spawning plants" if tick_array[tick_counter] < 0 else ""])
-		for i in abs(tick_array[tick_counter]):
-			create_wave()
-		if tick_array[tick_counter] < 0:
-			try_spawn_plants()
-		ap = 6
-		for mov in cur_moves:
-			match mov[4]:
-				4:
-					trees_moved += 1
-				2:
-					cities_moved += 1
-				1:
-					terrain_moved += 1
-		cur_moves = []
-		for winfo in pending_broken_waters:
-			if winfo == null:
-				continue
-			tile_array[winfo[0]][winfo[1]] &= ~4
-		pending_broken_waters = []
-		ap_craft_indicator.fill(null)
-		pathfind_update_flag = 0
-		if tick_counter == tick_array.size() - 1:
-			game_ended = true
-			historical_game_states.append([tile_array, wrs, ap_craft_indicator])
-			print("done; %d cities survived" % count_surviving_cities())
-	else:
-		print("done; %d cities survived" % count_surviving_cities())
 
 func view_historical_tick(tick):
 	view_tick = tick
