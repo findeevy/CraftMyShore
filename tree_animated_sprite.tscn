@@ -1,0 +1,85 @@
+[gd_scene load_steps=13 format=3 uid="uid://b7uh74mawcccq"]
+
+[ext_resource type="Texture2D" uid="uid://cygsy7yettfu4" path="res://Textures/vegtableFlood.png" id="1_eskm2"]
+[ext_resource type="Script" path="res://Scenes/FloodPlayerScript.gd" id="2_8vstu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2uqmy"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8eiub"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5mi20"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2e5th"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xxce0"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tsv73"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 320, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vhsm1"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 384, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_urrip"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05ol8"]
+atlas = ExtResource("1_eskm2")
+region = Rect2(0, 512, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cltfy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2uqmy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8eiub")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5mi20")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2e5th")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xxce0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tsv73")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vhsm1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_urrip")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05ol8")
+}],
+"loop": false,
+"name": &"tree",
+"speed": 8.0
+}]
+
+[node name="TreeAnimatedSprite" type="AnimatedSprite2D"]
+z_index = 10
+sprite_frames = SubResource("SpriteFrames_cltfy")
+animation = &"tree"
+autoplay = "tree"
+offset = Vector2(32, 32)
+script = ExtResource("2_8vstu")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]
