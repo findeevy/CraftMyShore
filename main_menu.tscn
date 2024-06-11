@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dfkwjerncq3s" path="res://Textures/homeScreen.png" id="1_aamoc"]
 [ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="2_u5cna"]
 [ext_resource type="Script" path="res://StartButton.gd" id="3_rtr8e"]
-[ext_resource type="AudioStream" path="res://Audio/themeSong.mp3" id="4_j2ry6"]
+[ext_resource type="AudioStream" uid="uid://cup46u33ojgly" path="res://Audio/themeSong.mp3" id="4_j2ry6"]
 
 [node name="main_menu" type="Node2D"]
 

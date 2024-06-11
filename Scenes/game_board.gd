@@ -8,6 +8,9 @@ signal mountain_move
 signal city_move
 signal tree_move
 
+@onready var city_flooder = preload("res://city_animated_sprite.tscn")
+@onready var tree_flooder = preload("res://tree_animated_sprite.tscn")
+
 func _ready():
 	load_array("map.dat")
 	render.emit()
@@ -127,6 +130,10 @@ func process_game_tick():
 			if winfo == null:
 				continue
 			Controller.tile_array[winfo[0]][winfo[1]] &= ~4
+			print("spawn anim")
+			var anim = tree_flooder.instantiate()
+			anim.position = Vector2i(winfo[1], winfo[0]) * Colors.TILE_SIZE
+			add_child(anim)
 		Controller.pending_broken_waters = []
 		Controller.ap_craft_indicator.fill(null)
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
@@ -140,7 +147,7 @@ func create_wave():
 	var col = Controller.get_flood_column()
 	Controller.water_array[col] += 1
 	Controller.wrs[col] = Controller.calculate_water_reach(col)
-	Controller.check_grass_absorb(col)
+	check_grass_absorb(col)
 	check_destroy_city(col)
 
 func try_spawn_plants():
@@ -152,11 +159,33 @@ func try_spawn_plants():
 				Controller.trees_planted += 1
 				tree_plant.emit()
 
+func check_grass_absorb(col): # this just checks if grass absorbs a single new water tile; grass tile movement should go somewhere else
+	var max_reach = max(Controller.wrs[col][0], Controller.wrs[col][1]) - 1
+	if max_reach < 0:
+		return
+	var pos = null
+	if max_reach + 1 < Controller.board_height and Controller.tile_array[max_reach+1][col] & 4 > 0:
+		pos = Vector2i(col, max_reach+1)	
+	elif col > 0 and Controller.tile_array[max_reach][col-1] & 4 > 0:
+		pos = Vector2i(col-1, max_reach)
+	elif col < Controller.board_length-1 and Controller.tile_array[max_reach][col+1] & 4 > 0:
+		pos = Vector2i(col+1, max_reach)
+
+	if pos != null:
+		Controller.water_array[col] -= 1
+		Controller.tile_array[pos.y][pos.x] &= ~4
+		Controller.wrs[col] = Controller.calculate_water_reach(col)
+		var anim = tree_flooder.instantiate()
+		anim.position = pos * Colors.TILE_SIZE
+		add_child(anim)
+
 func check_destroy_city(col):
 	var max_reach = max(Controller.wrs[col][0], Controller.wrs[col][1]) - 1
 	if max_reach < 0:
 		return
 	if Controller.tile_array[max_reach][col] & 2 > 0:
 		Controller.tile_array[max_reach][col] &= ~2
-		print("col %d destroyed city" % col)
+		var anim = city_flooder.instantiate()
+		anim.position = Vector2i(col, max_reach) * Colors.TILE_SIZE
+		add_child(anim)
 		city_destroy.emit()

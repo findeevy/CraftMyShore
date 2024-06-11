@@ -64,26 +64,6 @@ func calculate_water_reach(col):
 			reach += 1
 	return [reach, high_reach]
 
-func check_grass_absorb(col): # this just checks if grass absorbs a single new water tile; grass tile movement should go somewhere else
-	var max_reach = max(wrs[col][0], wrs[col][1]) - 1
-	if max_reach < 0:
-		return
-	if max_reach + 1 < board_height and tile_array[max_reach+1][col] & 4 > 0:
-		water_array[col] -= 1
-		tile_array[max_reach+1][col] &= ~4
-		print("col %d destroyed grass down" % col)
-		wrs[col] = calculate_water_reach(col)
-	elif col > 0 and tile_array[max_reach][col-1] & 4 > 0:
-		water_array[col] -= 1
-		tile_array[max_reach][col-1] &= ~4
-		print("col %d destroyed grass left" % col)
-		wrs[col] = calculate_water_reach(col)
-	elif col < board_length-1 and tile_array[max_reach][col+1] & 4 > 0:
-		water_array[col] -= 1
-		tile_array[max_reach][col+1] &= ~4
-		print("col %d destroyed grass right" % col)
-		wrs[col] = calculate_water_reach(col)
-
 func get_flood_column():
 	if board_length == 11:
 		return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2

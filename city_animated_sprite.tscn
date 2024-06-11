@@ -1,0 +1,86 @@
+[gd_scene load_steps=13 format=3 uid="uid://nrvpmvwruc3b"]
+
+[ext_resource type="Texture2D" uid="uid://dn25ldvq2mwv" path="res://Textures/cityFlood.png" id="1_b737t"]
+[ext_resource type="Script" path="res://Scenes/FloodPlayerScript.gd" id="2_uvdfa"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qu1xp"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f7jp2"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_626vp"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qy5fu"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pocj3"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3i6vu"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 320, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nr27m"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 384, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wp0c8"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uid20"]
+atlas = ExtResource("1_b737t")
+region = Rect2(0, 512, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3n3wb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qu1xp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f7jp2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_626vp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qy5fu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pocj3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3i6vu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nr27m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wp0c8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uid20")
+}],
+"loop": false,
+"name": &"city",
+"speed": 8.0
+}]
+
+[node name="CityAnimatedSprite" type="AnimatedSprite2D"]
+z_index = 10
+position = Vector2(64, 0)
+sprite_frames = SubResource("SpriteFrames_3n3wb")
+animation = &"city"
+autoplay = "city"
+offset = Vector2(32, 32)
+script = ExtResource("2_uvdfa")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

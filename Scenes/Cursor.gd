@@ -1,6 +1,5 @@
 extends Sprite2D
 
-var TILE_SIZE = 64;
 var previous_game = "";
 var previous_game_text = "";
 var file_written = false;
@@ -16,7 +15,7 @@ func _process(delta):
 		position = get_global_mouse_position()
 		visible = false
 	else:
-		position = Controller.mouse_tile_hover * TILE_SIZE
+		position = Controller.mouse_tile_hover * Colors.TILE_SIZE
 		visible = true
 		var ap_cost_info = Controller.get_hover_ap_cost()
 		var ap_cost = ap_cost_info[0]
