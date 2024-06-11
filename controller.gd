@@ -3,6 +3,10 @@ extends Node
 var init_array = []
 var tile_array = []
 
+var astar_grid = AStarGrid2D.new()
+var pathfind_update_flag = 0
+var path = null
+
 var board_length = 0
 var board_height = 0
 
@@ -42,7 +46,6 @@ var temp_water_break_move = null
 var game_ended = false
 var historical_game_states = []
 var view_tick = 0
-
 
 func calculate_water_reach(col):
 	var vol = water_array[col]
@@ -111,27 +114,6 @@ func view_historical_tick(tick):
 	wrs = historical_game_states[tick][1]
 	ap_craft_indicator = historical_game_states[tick][2]
 
-func get_next_tile_cycle(td, cur_step):
-	match cur_step:
-		0, 2 when td & 4 > 0:
-			return 4
-		0, 2 when td & 1 > 0:
-			return 1
-		0, 2:
-			return 2
-		4 when td & 1 > 0:
-			return 1
-		4 when td & 2 > 0:
-			return 2
-		4:
-			return 4
-		1 when td & 2 > 0:
-			return 2
-		1 when td & 4 > 0:
-			return 4
-		1:
-			return 1
-
 func get_hover_ap_cost():
 	if mouse_step == 0 or mouse_tile_hover.x >= board_length or mouse_tile_hover.y >= board_height:
 		hover_move = null
@@ -139,23 +121,40 @@ func get_hover_ap_cost():
 	var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 	for c in cur_moves:
 		if c[2] == mouse_tile_selected and c[4] == mouse_step:
-			var dist = abs(mouse_tile_hover.y - c[3].y) + abs(mouse_tile_hover.x - c[3].x)
+			var dist = calculate_move_distance(c[3], mouse_tile_hover, mouse_step)
 			hover_move = [move_cost, dist, mouse_tile_hover, c[3], mouse_step, 0]
 			return Vector2i(dist * move_cost, c[0] * c[1])
-	var dist = abs(mouse_tile_position.y - mouse_tile_hover.y) + abs(mouse_tile_position.x - mouse_tile_hover.x)
+	var dist = calculate_move_distance(mouse_tile_position, mouse_tile_hover, mouse_step)
 	hover_move = [move_cost, dist, mouse_tile_hover, mouse_tile_position, mouse_step, 0]
 	return Vector2i(dist * move_cost, 0)
+
+func update_pathfinding_grid(s, by):
+	if pathfind_update_flag != by:
+		astar_grid.fill_solid_region(astar_grid.region, false)
+		for c in board_length:
+			var max_reach = max(wrs[c][0], wrs[c][1]) - 1
+			for r in board_height:
+				if s != Vector2i(c, r) and not (max_reach < r and init_array[r][c] > 0 and tile_array[r][c] & by == 0):
+					#print("impassable at ",r,", ",c)
+					astar_grid.set_point_solid(Vector2i(c,r), true)
+					#print(astar_grid.is_point_solid(Vector2i(c,r)))
+		pathfind_update_flag = by
+
+func calculate_move_distance(s, e, by):
+	update_pathfinding_grid(s, by)
+	path = astar_grid.get_id_path(s, e)
+	return path.size() - 1
 
 func try_do_move():
 	var tile_val = tile_array[mouse_tile_position.y][mouse_tile_position.x]
 	var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
 	if max_reach < mouse_tile_position.y:
-		var dist = abs(mouse_tile_position.y - mouse_tile_selected.y) + abs(mouse_tile_position.x - mouse_tile_selected.x)
+		var dist = calculate_move_distance(mouse_tile_selected, mouse_tile_position, mouse_step)
 		var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 
 		for i in cur_moves.size():
 			if cur_moves[i][2] == mouse_tile_selected and cur_moves[i][4] == mouse_step:
-				dist = abs(mouse_tile_position.y - cur_moves[i][3].y) + abs(mouse_tile_position.x - cur_moves[i][3].x)
+				dist = calculate_move_distance(cur_moves[i][3], mouse_tile_position, mouse_step)
 				if ap + cur_moves[i][0] * cur_moves[i][1] - dist * move_cost < 0:
 					mouse_step = 0
 					return
@@ -184,15 +183,35 @@ func try_do_move():
 				tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
 				tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
 				mouse_step = 0
+				pathfind_update_flag = 0
 				return
-
 		if dist > 0:
 			cur_moves.append([move_cost, dist, mouse_tile_position, mouse_tile_selected, mouse_step, water_will_break])
-
 			tile_array[mouse_tile_selected.y][mouse_tile_selected.x] &= ~mouse_step
 			tile_array[mouse_tile_position.y][mouse_tile_position.x] |= mouse_step
+		mouse_step = 0
+		pathfind_update_flag = 0
 
-		mouse_step = 0;
+func get_next_tile_cycle(td, cur_step):
+	match cur_step:
+		0, 2 when td & 4 > 0:
+			return 4
+		0, 2 when td & 1 > 0:
+			return 1
+		0, 2:
+			return 2
+		4 when td & 1 > 0:
+			return 1
+		4 when td & 2 > 0:
+			return 2
+		4:
+			return 4
+		1 when td & 2 > 0:
+			return 2
+		1 when td & 4 > 0:
+			return 4
+		1:
+			return 1
 
 func cycleTile():
 	var tile_val = tile_array[mouse_tile_position.y][mouse_tile_position.x]
@@ -241,6 +260,7 @@ func undo_move(move_index):
 
 		var max_reach = max(wrs[col][0], wrs[col][1]) - 1
 		if max_reach < 0:
+			pathfind_update_flag = 0
 			return
 		var check_tile = null
 		if max_reach + 1 < board_height and tile_array[max_reach+1][col] & 4 > 0 and not is_tile_watterlogged(max_reach+1, col):
@@ -265,6 +285,7 @@ func undo_move(move_index):
 						temp_water_break_move = mov
 						tile_array[mov[3].y][mov[3].x] &= ~mov[4]
 						tile_array[mov[2].y][mov[2].x] |= mov[4]
+		pathfind_update_flag = 0
 
 func fill_ap_craft_indicator():
 	if game_ended:

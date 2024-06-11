@@ -80,6 +80,20 @@ texture_region_size = Vector2i(64, 64)
 1:25/0 = 0
 0:26/0 = 0
 1:26/0 = 0
+2:13/0 = 0
+2:12/0 = 0
+2:10/0 = 0
+2:11/0 = 0
+2:9/0 = 0
+2:8/0 = 0
+2:7/0 = 0
+2:6/0 = 0
+2:5/0 = 0
+2:4/0 = 0
+2:3/0 = 0
+2:0/0 = 0
+2:1/0 = 0
+2:2/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ylqfh"]
 tile_size = Vector2i(64, 64)
@@ -100,6 +114,7 @@ layer_1/tile_data = PackedInt32Array()
 layer_2/tile_data = PackedInt32Array()
 layer_3/z_index = 5
 layer_3/tile_data = PackedInt32Array()
+layer_4/z_index = 10
 layer_4/tile_data = PackedInt32Array()
 script = ExtResource("3_kapad")
 
