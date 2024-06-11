@@ -29,6 +29,46 @@ func _process(delta):
 		Controller.mouse_tile_hover = local_to_map(mouse_position)
 		render_ap_crafter()
 
+func delta_to_neighbor_index(dp):
+	match dp:
+		Vector2i(0, 1):
+			return 0
+		Vector2i(1, 0):
+			return 1
+		Vector2i(0, -1):
+			return 2
+		Vector2i(-1, 0):
+			return 3
+
+func get_path_neighbors(path, pi):
+	var neighbors = [false, false, false, false]
+	if pi > 0:
+		neighbors[delta_to_neighbor_index(path[pi] - path[pi-1])] = true
+	if pi < path.size() - 1:
+		neighbors[delta_to_neighbor_index(path[pi] - path[pi+1])] = true
+	var path_end_offset = 0 if pi == 0 else 10
+	match neighbors:
+		[true, false, false, false]:
+			return path_end_offset
+		[false, true, false, false]:
+			return path_end_offset + 1
+		[false, false, true, false]:
+			return path_end_offset + 2
+		[false, false, false, true]:
+			return path_end_offset + 3
+		[true, true, false, false]:
+			return 4
+		[false, true, true, false]:
+			return 5
+		[false, false, true, true]:
+			return 6
+		[true, false, false, true]:
+			return 7
+		[true, false, true, false]:
+			return 8
+		[false, true, false, true]:
+			return 9
+
 func render_ap_crafter():
 	Controller.fill_ap_craft_indicator()
 	clear_layer(4)
@@ -45,6 +85,9 @@ func render_ap_crafter():
 				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10 + blink))
 			1:
 				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13 + blink))
+	if Controller.path != null and Controller.path.size() > 1 and Controller.mouse_step > 0:
+		for pi in Controller.path.size():
+			set_cell(4, Controller.path[pi], 0, Vector2i(2, get_path_neighbors(Controller.path, pi)))
 	notify_runtime_tile_data_update(4)
 
 func render_tree_waterlogged(r, c):
