@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://xanty7s03b0e"]
+[gd_scene load_steps=5 format=3 uid="uid://xanty7s03b0e"]
 
 [ext_resource type="Texture2D" uid="uid://dfkwjerncq3s" path="res://Textures/homeScreen.png" id="1_aamoc"]
 [ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="2_u5cna"]
 [ext_resource type="Script" path="res://StartButton.gd" id="3_rtr8e"]
+[ext_resource type="AudioStream" path="res://Audio/themeSong.mp3" id="4_j2ry6"]
 
 [node name="main_menu" type="Node2D"]
 
@@ -30,5 +31,13 @@ theme_override_font_sizes/font_size = 160
 text = "CRAFT MY COAST"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("4_j2ry6")
+volume_db = 6.559
+autoplay = true
 
 [connection signal="button_down" from="Sprite2D/Button" to="Sprite2D/Button" method="_on_button_down"]
