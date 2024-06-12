@@ -1,47 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://xanty7s03b0e"]
+[gd_scene load_steps=5 format=3 uid="uid://xanty7s03b0e"]
 
 [ext_resource type="Texture2D" uid="uid://dfkwjerncq3s" path="res://Textures/homeScreen.png" id="1_aamoc"]
+[ext_resource type="Script" path="res://main_menu.gd" id="1_vyg05"]
 [ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="2_u5cna"]
-[ext_resource type="Script" path="res://StartButton.gd" id="3_rtr8e"]
 [ext_resource type="AudioStream" uid="uid://cup46u33ojgly" path="res://Audio/themeSong.mp3" id="4_j2ry6"]
-[ext_resource type="Script" path="res://MapButton.gd" id="4_no2up"]
 
 [node name="main_menu" type="Node2D"]
+script = ExtResource("1_vyg05")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(544, 320)
 texture = ExtResource("1_aamoc")
-
-[node name="Button" type="Button" parent="Sprite2D"]
-offset_left = -76.0
-offset_top = 126.0
-offset_right = 76.0
-offset_bottom = 174.0
-theme_override_fonts/font = ExtResource("2_u5cna")
-theme_override_font_sizes/font_size = 32
-text = "START GAME"
-script = ExtResource("3_rtr8e")
-
-[node name="MapButton" type="Button" parent="Sprite2D"]
-offset_left = -76.0
-offset_top = 186.0
-offset_right = 76.0
-offset_bottom = 234.0
-theme_override_fonts/font = ExtResource("2_u5cna")
-theme_override_font_sizes/font_size = 32
-text = "MAP EDITOR"
-script = ExtResource("4_no2up")
-
-[node name="Label" type="Label" parent="Sprite2D"]
-offset_left = -499.0
-offset_top = -309.0
-offset_right = 501.0
-offset_bottom = -159.0
-theme_override_fonts/font = ExtResource("2_u5cna")
-theme_override_font_sizes/font_size = 160
-text = "CRAFT MY COAST"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]
 
@@ -51,5 +20,40 @@ stream = ExtResource("4_j2ry6")
 volume_db = 6.559
 autoplay = true
 
-[connection signal="button_down" from="Sprite2D/Button" to="Sprite2D/Button" method="_on_button_down"]
-[connection signal="button_down" from="Sprite2D/MapButton" to="Sprite2D/MapButton" method="_on_button_down"]
+[node name="PlayButton" type="Button" parent="."]
+offset_left = 468.0
+offset_top = 446.0
+offset_right = 620.0
+offset_bottom = 494.0
+theme_override_fonts/font = ExtResource("2_u5cna")
+theme_override_font_sizes/font_size = 32
+text = "START GAME"
+
+[node name="MapOptionButton" type="OptionButton" parent="."]
+offset_left = 672.0
+offset_top = 56.0
+offset_right = 756.0
+offset_bottom = 418.0
+
+[node name="MapButton" type="Button" parent="."]
+offset_left = 468.0
+offset_top = 506.0
+offset_right = 624.0
+offset_bottom = 554.0
+theme_override_fonts/font = ExtResource("2_u5cna")
+theme_override_font_sizes/font_size = 32
+text = "MAP EDITOR"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 45.0
+offset_top = 11.0
+offset_right = 1045.0
+offset_bottom = 161.0
+theme_override_fonts/font = ExtResource("2_u5cna")
+theme_override_font_sizes/font_size = 160
+text = "CRAFT MY COAST"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="button_down" from="PlayButton" to="." method="_on_play_button_down"]
+[connection signal="button_down" from="MapButton" to="." method="_on_map_button_down"]
