@@ -2,6 +2,8 @@ extends Node
 
 signal render_background
 signal render
+signal save_map_file
+signal load_map_file
 
 @onready var city_flooder = preload("res://city_animated_sprite.tscn")
 @onready var tree_flooder = preload("res://tree_animated_sprite.tscn")
@@ -15,6 +17,11 @@ func _process(delta):
 	pass
 	
 func _input(event):
+	if Input.is_action_just_pressed("Right Click"):
+		if Controller.mouse_tile_position.y == Controller.board_height and Controller.mouse_tile_position.x <= Controller.tick_array.size():
+			Controller.tick_array[Controller.mouse_tile_position.x] = -1*(Controller.tick_array[Controller.mouse_tile_position.x])
+			render.emit()
+			render_background.emit()
 	if Input.is_action_just_pressed("Click"):
 		if Controller.mouse_tile_position.x < Controller.board_length and Controller.mouse_tile_position.y < Controller.board_height:
 			map_cycle()
@@ -29,6 +36,52 @@ func _input(event):
 			Controller.selected_tile="t"
 		elif Controller.mouse_tile_position==Vector2i(Controller.ap_start_c+1,Controller.ap_start_r+1):
 			Controller.selected_tile="v"
+		elif Controller.mouse_tile_position==Vector2i(Controller.ap_start_c+2,Controller.ap_start_r+3):
+			for l in Controller.init_array:
+				l.fill(0)
+			for l in Controller.tile_array:
+				l.fill(0)
+			render.emit()
+			render_background.emit()
+		elif Controller.mouse_tile_position==Vector2i(Controller.ap_start_c-1,Controller.ap_start_r+3):
+			get_tree().change_scene_to_file("res://main_menu.tscn")
+		elif Controller.mouse_tile_position==Vector2i(Controller.ap_start_c+1,Controller.ap_start_r+3):
+			save_map()
+		elif Controller.mouse_tile_position==Vector2i(Controller.ap_start_c,Controller.ap_start_r+3):
+			load_map()
+		elif Controller.mouse_tile_position.y == Controller.board_height and Controller.mouse_tile_position.x <= Controller.tick_array.size():
+			Controller.tick_array[Controller.mouse_tile_position.x] = (Controller.tick_array[Controller.mouse_tile_position.x] + 1 ) % 6
+			render.emit()
+			render_background.emit()
+
+func load_map():
+	load_map_file.emit()
+
+func save_map():
+	Controller.export_string=""
+	for i in Controller.init_array:
+		for j in i:
+			match j:
+					3:
+						Controller.export_string+="t"
+					2:
+						Controller.export_string+="c"
+					0:
+						Controller.export_string+="w"
+					4:
+						Controller.export_string+="v"
+					1:
+						Controller.export_string+="l"
+		Controller.export_string+=("\n")
+	Controller.export_string+=("gea: ")
+	for ki in Controller.tick_array.size():
+		var k = Controller.tick_array[ki]
+		if ki < Controller.tick_array.size()-1:
+			Controller.export_string+=str(k)+", "
+		else:
+			Controller.export_string+=str(k)
+	Controller.export_string+=("\n")
+	save_map_file.emit()
 
 func map_cycle():
 	match Controller.selected_tile:
@@ -51,39 +104,15 @@ func map_cycle():
 	render_background.emit()
 
 func load_array(file_name):
-	Controller.load_map(file_name)
-	Controller.ap_start_c = Controller.board_length + 2
-	process_game_tick()
+	Controller.file_name = file_name
+	Controller.load_map()
+	Controller.water_array.resize(Controller.board_length)
+	Controller.water_array.fill(0)
+	Controller.wrs.resize(Controller.board_length)
+	Controller.wrs.fill([0,0])
 
-func process_game_tick():
-	if not Controller.game_ended:
-		Controller.mouse_step = 0
-		Controller.historical_game_states.append([Controller.tile_array.duplicate(true), Controller.wrs.duplicate(true), Controller.ap_craft_indicator.duplicate(true)])
-		Controller.tick_counter += 1
-		print("flooding %d%s" % [abs(Controller.tick_array[Controller.tick_counter]), ", try spawning plants" if Controller.tick_array[Controller.tick_counter] < 0 else ""])
-		Controller.ap = 6
-		for mov in Controller.cur_moves:
-			match mov[4]:
-				4:
-					Controller.trees_moved += 1
-				2:
-					Controller.cities_moved += 1
-				1:
-					Controller.terrain_moved += 1
-		Controller.cur_moves = []
-		for winfo in Controller.pending_broken_waters:
-			if winfo == null:
-				continue
-			Controller.tile_array[winfo[0]][winfo[1]] &= ~4
-			print("spawn anim")
-			var anim = tree_flooder.instantiate()
-			anim.position = Vector2i(winfo[1], winfo[0]) * Colors.TILE_SIZE
-			add_child(anim)
-		Controller.pending_broken_waters = []
-		Controller.ap_craft_indicator.fill(null)
-		if Controller.tick_counter == Controller.tick_array.size() - 1:
-			Controller.game_ended = true
-			Controller.historical_game_states.append([Controller.tile_array, Controller.wrs, Controller.ap_craft_indicator])
-			print("done; %d cities survived" % Controller.count_surviving_cities())
-	else:
-		print("done; %d cities survived" % Controller.count_surviving_cities())
+
+func _on_load_dialog_finalize_load():
+	load_array(Controller.loaded_file)
+	render.emit()
+	render_background.emit()

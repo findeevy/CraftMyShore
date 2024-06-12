@@ -7,6 +7,9 @@ var tile_array = []
 var pdf = null
 var pdf_sum = 0
 
+var export_string = ""
+var loaded_file = ""
+
 var astar_grid = AStarGrid2D.new()
 var pathfind_update_flag = 0
 var path = null
@@ -33,7 +36,8 @@ var is_editor = false;
 
 var tick_counter = -1
 # number of dice to roll per turn; negative numbers also spawn plants
-var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
+var tick_array_default = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
+var tick_array = null
 var tick_start_r = 0
 
 var mouse_tile_position = Vector2i(0,0)
@@ -283,12 +287,18 @@ func undo_move(move_index):
 						tile_array[mov[2].y][mov[2].x] |= mov[4]
 		pathfind_update_flag = 0
 
+
 func load_map():
-	var f = FileAccess.open("res://Maps/" + file_name, FileAccess.READ)
+	var fn = file_name if file_name.length() > 6 and file_name.substr(0,6) == "res://" else "res://Maps/" + file_name
+	var f = FileAccess.open(fn, FileAccess.READ)
+	tile_array = []
+	init_array = []
+	tick_array = tick_array_default.duplicate()
 	while f.get_position() < f.get_length():
 		var l = f.get_line()
 		if l.length() > 4 and l.substr(0, 4) == "pdf:":
 			pdf = []
+			pdf_sum = 0
 			for v in l.substr(4).split(","):
 				var n = v.strip_edges().to_int()
 				pdf.append(n)
@@ -323,8 +333,7 @@ func load_map():
 	board_length = init_array[0].size()
 	board_height = init_array.size()
 	ap_start_c = board_length + 2
-	if board_height <= 8:
-		ap_start_r = 0
+	ap_start_r = 0 if board_height <= 8 else 1
 	tick_start_r = max(board_height, ap_start_r + 8)
 	get_window().size = Vector2i(max(board_length + 6, tick_array.size()), tick_start_r + 1) * Colors.TILE_SIZE
 

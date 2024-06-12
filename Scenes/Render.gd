@@ -29,7 +29,6 @@ func _process(delta):
 		Controller.mouse_tile_hover = local_to_map(mouse_position)
 		if get_tree().current_scene.name == "map_editor":
 			render_inventory()
-			print("!")
 		else:
 			render_ap_crafter()
 
@@ -79,6 +78,10 @@ func render_inventory():
 	set_cell(4, Vector2i(Controller.ap_start_c, Controller.ap_start_r+1), 0,  Vector2i(0,3))
 	set_cell(4, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+1), 0,  Vector2i(0,1))
 	set_cell(4, Vector2i(Controller.ap_start_c, Controller.ap_start_r+2), 0,  Vector2i(0,2))
+	set_cell(4, Vector2i(Controller.ap_start_c-1, Controller.ap_start_r+3), 0,  Vector2i(0,27))
+	set_cell(4, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0,  Vector2i(2,15))
+	set_cell(4, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0,  Vector2i(2,14))
+	set_cell(4, Vector2i(Controller.ap_start_c+2, Controller.ap_start_r+3), 0,  Vector2i(2,16))
 	
 func render_ap_crafter():
 	Controller.fill_ap_craft_indicator()
@@ -188,6 +191,7 @@ func get_land_render_tile(neighbors):
 func _on_game_board_render_background():
 	if offset == 0:
 		clear_layer(0)
+		clear_layer(2)
 		var r = 0
 		for rd in Controller.init_array:
 			var c = 0

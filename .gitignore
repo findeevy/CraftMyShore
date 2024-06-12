@@ -28,3 +28,4 @@ mono_crash.*.json
 *Web/
 previousGame.dat
 previousGame.dat
+*.dat
