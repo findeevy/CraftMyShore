@@ -51,7 +51,6 @@ func _input(event):
 			load_map()
 		elif Controller.mouse_tile_position.y == Controller.board_height and Controller.mouse_tile_position.x <= Controller.tick_array.size():
 			Controller.tick_array[Controller.mouse_tile_position.x] = (Controller.tick_array[Controller.mouse_tile_position.x] + 1 ) % 6
-			print(Controller.tick_array[Controller.mouse_tile_position.x])
 			render.emit()
 			render_background.emit()
 
@@ -82,9 +81,7 @@ func save_map():
 		else:
 			Controller.export_string+=str(k)
 	Controller.export_string+=("\n")
-	Controller.export_string+=Controller.pdf_string
 	save_map_file.emit()
-	print(Controller.export_string)
 
 func map_cycle():
 	match Controller.selected_tile:
@@ -107,16 +104,15 @@ func map_cycle():
 	render_background.emit()
 
 func load_array(file_name):
-	Controller.load_map(file_name)
+	Controller.file_name = file_name
+	Controller.load_map()
 	Controller.water_array.resize(Controller.board_length)
 	Controller.water_array.fill(0)
 	Controller.wrs.resize(Controller.board_length)
 	Controller.wrs.fill([0,0])
-	Controller.ap_start_c = Controller.board_length + 2
 
 
 func _on_load_dialog_finalize_load():
 	load_array(Controller.loaded_file)
-	print("loaded file: "+Controller.loaded_file)
 	render.emit()
 	render_background.emit()

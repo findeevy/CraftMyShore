@@ -173,6 +173,7 @@ script = ExtResource("19_6ckpd")
 size = Vector2i(400, 350)
 popup_window = true
 dialog_hide_on_ok = true
+root_subfolder = "res://Maps"
 filters = PackedStringArray("")
 script = ExtResource("11_vk7at")
 
@@ -181,6 +182,7 @@ title = "Open a File"
 size = Vector2i(500, 500)
 ok_button_text = "Open"
 file_mode = 0
+root_subfolder = "res://Maps"
 script = ExtResource("12_mwqtl")
 
 [connection signal="load_map_file" from="." to="LoadDialog" method="_on_map_editor_load_map_file"]

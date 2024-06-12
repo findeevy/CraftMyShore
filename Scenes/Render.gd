@@ -191,6 +191,7 @@ func get_land_render_tile(neighbors):
 func _on_game_board_render_background():
 	if offset == 0:
 		clear_layer(0)
+		clear_layer(2)
 		var r = 0
 		for rd in Controller.init_array:
 			var c = 0
