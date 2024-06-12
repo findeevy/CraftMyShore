@@ -22,9 +22,13 @@ var trees_planted = 0
 var water_array = []
 var wrs = []
 
+var selected_tile = "w"
+
 var rng = RandomNumberGenerator.new()
 
 var is_paused = false;
+
+var is_editor = false;
 
 var tick_counter = -1
 var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]

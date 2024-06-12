@@ -27,6 +27,18 @@ func _process(delta):
 			modulate = Colors.CITY
 		elif Controller.mouse_step == 1:
 			modulate = Colors.HILL
+		elif get_tree().current_scene.name == "map_editor":
+			match Controller.selected_tile:
+				"v":
+					modulate = Colors.PLANT
+				"c":
+					modulate = Colors.CITY
+				"t":
+					modulate = Colors.HILL
+				"w":
+					modulate = Colors.WATER
+				"l":
+					modulate = Colors.NONE
 		else:
 			match Controller.tile_array[Controller.mouse_tile_hover.y][Controller.mouse_tile_hover.x]:
 				4:

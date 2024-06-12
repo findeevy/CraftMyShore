@@ -27,7 +27,11 @@ func _process(delta):
 	if offset == 0:
 		var mouse_position = get_global_mouse_position()
 		Controller.mouse_tile_hover = local_to_map(mouse_position)
-		render_ap_crafter()
+		if get_tree().current_scene.name == "map_editor":
+			render_inventory()
+			print("!")
+		else:
+			render_ap_crafter()
 
 func delta_to_neighbor_index(dp):
 	match dp:
@@ -69,6 +73,13 @@ func get_path_neighbors(path, pi):
 		[false, true, false, true]:
 			return 9
 
+func render_inventory():
+	set_cell(4, Vector2i(Controller.ap_start_c, Controller.ap_start_r), 0,  Vector2i(0,4))
+	set_cell(4, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r), 0,  Vector2i(0,5))
+	set_cell(4, Vector2i(Controller.ap_start_c, Controller.ap_start_r+1), 0,  Vector2i(0,3))
+	set_cell(4, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+1), 0,  Vector2i(0,1))
+	set_cell(4, Vector2i(Controller.ap_start_c, Controller.ap_start_r+2), 0,  Vector2i(0,2))
+	
 func render_ap_crafter():
 	Controller.fill_ap_craft_indicator()
 	clear_layer(4)
@@ -143,11 +154,11 @@ func get_land_render_tile(neighbors):
 		[true, true, false, true]:
 			return Vector2i(1, 23)
 		[true, true, true, false]:
-			return Vector2i(1, 24)
+			return Vector2i(0, 24)
 		[false, true, true, true]:
 			return Vector2i(0, 23)
 		[true, false, true, true]:
-			return Vector2i(0, 24)
+			return Vector2i(1, 24)
 
 		[true, true, false, false]:
 			return Vector2i(0, 18)
