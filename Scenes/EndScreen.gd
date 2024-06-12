@@ -20,9 +20,7 @@ func _process(delta):
 				end_timer = 1.0
 				if Controller.tick_array.size() - 2 < Controller.view_tick:
 					Controller.view_historical_tick(0)
-					print(Controller.tile_array)
 					render_end.emit()
 				else:
 					Controller.view_historical_tick(Controller.view_tick + 1)
-					print(Controller.tile_array)
 					render_end.emit()
