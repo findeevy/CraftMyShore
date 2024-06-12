@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://xanty7s03b0e"]
+[gd_scene load_steps=6 format=3 uid="uid://xanty7s03b0e"]
 
 [ext_resource type="Texture2D" uid="uid://dfkwjerncq3s" path="res://Textures/homeScreen.png" id="1_aamoc"]
 [ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="2_u5cna"]
 [ext_resource type="Script" path="res://StartButton.gd" id="3_rtr8e"]
 [ext_resource type="AudioStream" uid="uid://cup46u33ojgly" path="res://Audio/themeSong.mp3" id="4_j2ry6"]
+[ext_resource type="Script" path="res://MapButton.gd" id="4_no2up"]
 
 [node name="main_menu" type="Node2D"]
 
@@ -12,14 +13,24 @@ position = Vector2(544, 320)
 texture = ExtResource("1_aamoc")
 
 [node name="Button" type="Button" parent="Sprite2D"]
-offset_left = -56.0
-offset_top = 154.0
-offset_right = 56.0
-offset_bottom = 202.0
+offset_left = -76.0
+offset_top = 126.0
+offset_right = 76.0
+offset_bottom = 174.0
 theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
-text = "START"
+text = "START GAME"
 script = ExtResource("3_rtr8e")
+
+[node name="MapButton" type="Button" parent="Sprite2D"]
+offset_left = -76.0
+offset_top = 186.0
+offset_right = 76.0
+offset_bottom = 234.0
+theme_override_fonts/font = ExtResource("2_u5cna")
+theme_override_font_sizes/font_size = 32
+text = "MAP EDITOR"
+script = ExtResource("4_no2up")
 
 [node name="Label" type="Label" parent="Sprite2D"]
 offset_left = -499.0
@@ -41,3 +52,4 @@ volume_db = 6.559
 autoplay = true
 
 [connection signal="button_down" from="Sprite2D/Button" to="Sprite2D/Button" method="_on_button_down"]
+[connection signal="button_down" from="Sprite2D/MapButton" to="Sprite2D/MapButton" method="_on_button_down"]

@@ -1,0 +1,172 @@
+[gd_scene load_steps=13 format=3 uid="uid://4i3sdp8o4ydt"]
+
+[ext_resource type="Script" path="res://Scenes/map_editor.gd" id="1_fxcof"]
+[ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="2_sj7rt"]
+[ext_resource type="Script" path="res://Scenes/Render.gd" id="3_l3rwt"]
+[ext_resource type="Texture2D" uid="uid://qgooqrce6dgm" path="res://Textures/cursor.png" id="4_g0qf4"]
+[ext_resource type="Script" path="res://Scenes/Cursor.gd" id="5_okikm"]
+[ext_resource type="Script" path="res://Scenes/Selected.gd" id="6_ekiet"]
+[ext_resource type="Texture2D" uid="uid://vfoqd27fy31y" path="res://Textures/introBackground.png" id="7_uwm8e"]
+[ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="8_r4jb6"]
+[ext_resource type="AudioStream" uid="uid://v3ed0igtt2wt" path="res://Audio/click.mp3" id="18_xysre"]
+[ext_resource type="Script" path="res://Scenes/clickSound.gd" id="19_6ckpd"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qsj6d"]
+texture = ExtResource("2_sj7rt")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:1/0 = 0
+0:2/0 = 0
+0:3/0 = 0
+0:4/0 = 0
+0:5/0 = 0
+0:6/0 = 0
+0:7/0 = 0
+0:8/0 = 0
+0:9/0 = 0
+0:10/0 = 0
+0:11/0 = 0
+0:12/0 = 0
+0:13/0 = 0
+0:14/0 = 0
+0:15/0 = 0
+0:16/0 = 0
+0:17/0 = 0
+1:14/0 = 0
+1:15/0 = 0
+1:16/0 = 0
+1:17/0 = 0
+1:13/0 = 0
+1:12/0 = 0
+1:11/0 = 0
+1:10/0 = 0
+1:9/0 = 0
+1:7/0 = 0
+1:6/0 = 0
+1:5/0 = 0
+1:4/0 = 0
+1:3/0 = 0
+1:2/0 = 0
+1:1/0 = 0
+1:0/0 = 0
+1:8/0 = 0
+0:18/0 = 0
+1:18/0 = 0
+1:19/0 = 0
+0:19/0 = 0
+0:20/0 = 0
+1:20/0 = 0
+0:21/0 = 0
+1:21/0 = 0
+0:22/0 = 0
+1:22/0 = 0
+1:23/0 = 0
+0:23/0 = 0
+0:24/0 = 0
+1:24/0 = 0
+0:25/0 = 0
+1:25/0 = 0
+0:26/0 = 0
+1:26/0 = 0
+2:13/0 = 0
+2:12/0 = 0
+2:10/0 = 0
+2:11/0 = 0
+2:9/0 = 0
+2:8/0 = 0
+2:7/0 = 0
+2:6/0 = 0
+2:5/0 = 0
+2:4/0 = 0
+2:3/0 = 0
+2:0/0 = 0
+2:1/0 = 0
+2:2/0 = 0
+2:14/0 = 0
+2:15/0 = 0
+2:16/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ylqfh"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_qsj6d")
+
+[node name="map_editor" type="Node2D"]
+script = ExtResource("1_fxcof")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_ylqfh")
+rendering_quadrant_size = 12
+format = 2
+layer_1/z_index = 3
+layer_1/tile_data = PackedInt32Array()
+layer_2/tile_data = PackedInt32Array()
+layer_3/z_index = 5
+layer_3/tile_data = PackedInt32Array()
+layer_4/z_index = 10
+layer_4/tile_data = PackedInt32Array()
+script = ExtResource("3_l3rwt")
+
+[node name="TileMap2" type="TileMap" parent="."]
+position = Vector2(0, 12)
+tile_set = SubResource("TileSet_ylqfh")
+rendering_quadrant_size = 12
+format = 2
+layer_0/z_index = 2
+script = ExtResource("3_l3rwt")
+
+[node name="TileMap3" type="TileMap" parent="."]
+position = Vector2(0, 24)
+tile_set = SubResource("TileSet_ylqfh")
+rendering_quadrant_size = 12
+format = 2
+layer_0/z_index = 1
+script = ExtResource("3_l3rwt")
+
+[node name="Cursor" type="Sprite2D" parent="."]
+position = Vector2(1.84241, 3.30222)
+texture = ExtResource("4_g0qf4")
+centered = false
+vframes = 8
+script = ExtResource("5_okikm")
+
+[node name="Selected" type="Sprite2D" parent="."]
+texture = ExtResource("4_g0qf4")
+centered = false
+vframes = 8
+script = ExtResource("6_ekiet")
+
+[node name="InstructionBackground" type="Sprite2D" parent="."]
+position = Vector2(704, 320)
+texture = ExtResource("7_uwm8e")
+centered = false
+
+[node name="Label" type="Label" parent="InstructionBackground"]
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 375.0
+offset_bottom = 232.0
+theme_override_colors/font_color = Color(0.117647, 0.435294, 0.313726, 1)
+theme_override_fonts/font = ExtResource("8_r4jb6")
+theme_override_font_sizes/font_size = 32
+text = "CRAFT MY COAST
+-------------------------------
+END TURN: SPAWN WAVES
+LEFT CLICK: SELECT
+RIGHT CLICK DESELECT
+-------------------------------"
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="Click" type="AudioStreamPlayer" parent="AudioListener2D"]
+process_mode = 3
+stream = ExtResource("18_xysre")
+volume_db = 6.559
+script = ExtResource("19_6ckpd")
+
+[connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
+[connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
+[connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
+[connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
