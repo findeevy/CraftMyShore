@@ -155,11 +155,21 @@ func try_spawn_plants():
 		for c in Controller.board_length:
 			var max_reach = max(Controller.wrs[c][0], Controller.wrs[c][1]) - 1
 			if Controller.init_array[r][c] == 4 and Controller.tile_array[r][c] == 0 and max_reach < r:
-				Controller.tile_array[r][c] |= 4
 				Controller.trees_planted += 1
 				tree_plant.emit()
+				Controller.count_adjacent_water_tiles(r, c)
+				if Controller.waters_to_break.size() > 0:
+					var col = Controller.waters_to_break[0][1]
+					Controller.water_array[col] -= 1
+					Controller.wrs[col] = Controller.calculate_water_reach(col)
+					var anim = tree_flooder.instantiate()
+					anim.position = Vector2i(c, r) * Colors.TILE_SIZE
+					add_child(anim)
+					Controller.waters_to_break = []
+				else:
+					Controller.tile_array[r][c] |= 4
 
-func check_grass_absorb(col): # this just checks if grass absorbs a single new water tile; grass tile movement should go somewhere else
+func check_grass_absorb(col): # this just checks if extant, unmoved grass absorbs a single new water tile; grass tile movement should go somewhere else
 	var max_reach = max(Controller.wrs[col][0], Controller.wrs[col][1]) - 1
 	if max_reach < 0:
 		return
