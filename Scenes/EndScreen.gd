@@ -4,13 +4,8 @@ signal render_end
 
 var end_timer = 1.0
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	get_parent().position = Vector2i(Controller.board_length, Controller.ap_start_r + 4) * Colors.TILE_SIZE
 	if Controller.game_ended:
 		self.text = "DONE!\nCITIES LEFT: %d\nTREES PLANTED: %d\nCITIES MOVED: %d\nTREES MOVED: %d\nTERRAIN MOVED: %d" % [Controller.count_surviving_cities(), Controller.trees_planted, Controller.cities_moved, Controller.trees_moved, Controller.terrain_moved]
 

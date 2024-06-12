@@ -31,8 +31,9 @@ var is_paused = false;
 var is_editor = false;
 
 var tick_counter = -1
-var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
 # number of dice to roll per turn; negative numbers also spawn plants
+var tick_array = [0, 1, 1, 1, 1, 2, -2, 2, 2, -2, 3, 3, -3, 3, 3, -3, 5]
+var tick_start_r = 0
 
 var mouse_tile_position = Vector2i(0,0)
 var mouse_tile_hover = Vector2i(0,0)
@@ -320,6 +321,11 @@ func load_map(file_name):
 			tile_array.append(td)
 	board_length = init_array[0].size()
 	board_height = init_array.size()
+	ap_start_c = board_length + 2
+	if board_height <= 8:
+		ap_start_r = 0
+	tick_start_r = max(board_height, ap_start_r + 8)
+	get_window().size = Vector2i(max(board_length + 6, tick_array.size()), tick_start_r + 1) * Colors.TILE_SIZE
 
 func fill_ap_craft_indicator():
 	if game_ended:

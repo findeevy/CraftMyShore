@@ -133,9 +133,9 @@ func _on_game_board_render():
 	if offset == 0:
 		clear_layer(3)
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
-			set_cell(3, Vector2i(Controller.view_tick, r), 0, Vector2i(1, 0))
+			set_cell(3, Vector2i(Controller.view_tick, Controller.tick_start_r), 0, Vector2i(1, 0))
 		else:
-			set_cell(3, Vector2i(Controller.tick_counter, r), 0, Vector2i(1, 0))
+			set_cell(3, Vector2i(Controller.tick_counter, Controller.tick_start_r), 0, Vector2i(1, 0))
 			for water in Controller.waters_to_break:
 				set_cell(3, Vector2i(water[1], water[0]), 0, Vector2i(1, 0))
 		notify_runtime_tile_data_update(3)
@@ -200,9 +200,9 @@ func _on_game_board_render_background():
 				c+=1
 			r+=1
 		for c in Controller.tick_array.size():
-			set_cell(0, Vector2i(c, r), 0, Vector2i(1, abs(Controller.tick_array[c]) + 1))
+			set_cell(0, Vector2i(c, Controller.tick_start_r), 0, Vector2i(1, abs(Controller.tick_array[c]) + 1))
 			if Controller.tick_array[c] < 0:
-				set_cell(2, Vector2i(c, r), 0, Vector2i(1, 7))
+				set_cell(2, Vector2i(c, Controller.tick_start_r), 0, Vector2i(1, 7))
 
 		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r), 0, Vector2i(1, 1))
 		set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+1), 0, Vector2i(1, 1))
