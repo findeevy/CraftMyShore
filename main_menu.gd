@@ -9,7 +9,7 @@ func _ready():
 		print(f)
 		if f.length() > 4 and f.substr(f.length() - 4) == ".dat":
 			opts.append(f)
-			map_options.add_item(f.substr(0, f.length() - 4).capitalize())
+			map_options.add_item(f.substr(0, f.length() - 4).replace("_", " ").to_upper())
 
 func _on_map_button_down():
 	if map_options.selected >= 0:
