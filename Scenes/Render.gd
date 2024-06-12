@@ -91,7 +91,7 @@ func render_ap_crafter():
 	notify_runtime_tile_data_update(4)
 
 func render_tree_waterlogged(r, c):
-	return Vector2i(1, 8) if Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)
+	return Vector2i(1, 8) if not Controller.game_ended and Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)
 
 func _on_game_board_render():
 	var lr = 1 if offset == 0 else 0

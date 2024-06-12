@@ -22,7 +22,7 @@ func _process(delta):
 func _input(event):
 	if Input.is_action_just_pressed("Click"):
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
-			if Controller.mouse_tile_position.y == Controller.board_height and Controller.mouse_tile_position.x < Controller.tick_counter:
+			if Controller.mouse_tile_position.y == Controller.board_height and Controller.mouse_tile_position.x <= Controller.tick_counter:
 				Controller.view_historical_tick(Controller.mouse_tile_position.x)
 				render.emit()
 			elif Controller.mouse_tile_position.x in range(Controller.ap_start_c, Controller.ap_start_c + 1) and Controller.tick_counter == Controller.tick_array.size() - 1:

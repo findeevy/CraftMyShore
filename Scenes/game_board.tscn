@@ -224,3 +224,5 @@ script = ExtResource("21_txjv4")
 [connection signal="tree_move" from="." to="AudioListener2D/TreeSound" method="_on_game_board_tree_move"]
 [connection signal="tree_plant" from="." to="AudioListener2D/SandSound" method="_on_game_board_tree_plant"]
 [connection signal="render_end" from="InstructionBackground/Label" to="TileMap" method="_on_label_render_end"]
+[connection signal="render_end" from="InstructionBackground/Label" to="TileMap2" method="_on_label_render_end"]
+[connection signal="render_end" from="InstructionBackground/Label" to="TileMap3" method="_on_label_render_end"]
