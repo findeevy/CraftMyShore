@@ -12,7 +12,7 @@ signal tree_move
 @onready var tree_flooder = preload("res://tree_animated_sprite.tscn")
 
 func _ready():
-	load_array("map.dat")
+	load_array()
 	render.emit()
 	render_background.emit()
 
@@ -60,8 +60,8 @@ func _input(event):
 			Controller.mouse_step = 0
 			Controller.pathfind_update_flag = 0
 
-func load_array(file_name):
-	Controller.load_map(file_name)
+func load_array():
+	Controller.load_map()
 	Controller.water_array.resize(Controller.board_length)
 	Controller.water_array.fill(0)
 	Controller.wrs.resize(Controller.board_length)

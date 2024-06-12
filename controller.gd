@@ -1,5 +1,6 @@
 extends Node
 
+var file_name = "map.dat"
 var init_array = []
 var tile_array = []
 
@@ -282,8 +283,8 @@ func undo_move(move_index):
 						tile_array[mov[2].y][mov[2].x] |= mov[4]
 		pathfind_update_flag = 0
 
-func load_map(file_name):
-	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
+func load_map():
+	var f = FileAccess.open("res://Maps/" + file_name, FileAccess.READ)
 	while f.get_position() < f.get_length():
 		var l = f.get_line()
 		if l.length() > 4 and l.substr(0, 4) == "pdf:":
