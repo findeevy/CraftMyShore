@@ -5,6 +5,10 @@ var tile_array = []
 
 var pdf = null
 var pdf_sum = 0
+var pdf_string="pdf: 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1"
+
+var export_string = ""
+var loaded_file = ""
 
 var astar_grid = AStarGrid2D.new()
 var pathfind_update_flag = 0
@@ -282,7 +286,12 @@ func undo_move(move_index):
 		pathfind_update_flag = 0
 
 func load_map(file_name):
-	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
+	var f = null
+	if(file_name.contains("res://")):
+		f = FileAccess.open(file_name, FileAccess.READ)
+	else:
+		f = FileAccess.open("res://" + file_name, FileAccess.READ)
+	print(f.get_as_text())
 	while f.get_position() < f.get_length():
 		var l = f.get_line()
 		if l.length() > 4 and l.substr(0, 4) == "pdf:":

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dndyem0dvnksg"]
+[gd_scene load_steps=15 format=3 uid="uid://dndyem0dvnksg"]
 
 [ext_resource type="Script" path="res://Scenes/map_editor.gd" id="1_fxcof"]
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="2_sj7rt"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://Scenes/Selected.gd" id="6_ekiet"]
 [ext_resource type="Texture2D" uid="uid://vfoqd27fy31y" path="res://Textures/introBackground.png" id="7_uwm8e"]
 [ext_resource type="FontFile" uid="uid://bu8d81gwcxwus" path="res://Fonts/finPixel.ttf" id="8_r4jb6"]
+[ext_resource type="Script" path="res://Scenes/FileDialog.gd" id="11_vk7at"]
+[ext_resource type="Script" path="res://Scenes/LoadDialog.gd" id="12_mwqtl"]
 [ext_resource type="AudioStream" uid="uid://v3ed0igtt2wt" path="res://Audio/click.mp3" id="18_xysre"]
 [ext_resource type="Script" path="res://Scenes/clickSound.gd" id="19_6ckpd"]
 
@@ -85,6 +87,7 @@ texture_region_size = Vector2i(64, 64)
 2:14/0 = 0
 2:15/0 = 0
 2:16/0 = 0
+0:27/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_ylqfh"]
 tile_size = Vector2i(64, 64)
@@ -166,7 +169,26 @@ stream = ExtResource("18_xysre")
 volume_db = 6.559
 script = ExtResource("19_6ckpd")
 
+[node name="FileDialog" type="FileDialog" parent="."]
+size = Vector2i(400, 350)
+popup_window = true
+dialog_hide_on_ok = true
+filters = PackedStringArray("")
+script = ExtResource("11_vk7at")
+
+[node name="LoadDialog" type="FileDialog" parent="."]
+title = "Open a File"
+size = Vector2i(500, 500)
+ok_button_text = "Open"
+file_mode = 0
+script = ExtResource("12_mwqtl")
+
+[connection signal="load_map_file" from="." to="LoadDialog" method="_on_map_editor_load_map_file"]
 [connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
 [connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
 [connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
+[connection signal="save_map_file" from="." to="FileDialog" method="_on_map_editor_save_map_file"]
+[connection signal="file_selected" from="FileDialog" to="FileDialog" method="_on_file_selected"]
+[connection signal="file_selected" from="LoadDialog" to="LoadDialog" method="_on_file_selected"]
+[connection signal="finalize_load" from="LoadDialog" to="." method="_on_load_dialog_finalize_load"]
