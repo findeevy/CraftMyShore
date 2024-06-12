@@ -22,15 +22,14 @@ func _process(delta):
 func _input(event):
 	if Input.is_action_just_pressed("Click"):
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
-			if Controller.mouse_tile_position.y == Controller.board_height and Controller.mouse_tile_position.x <= Controller.tick_counter:
+			if Controller.mouse_tile_position.y == Controller.tick_start_r and Controller.mouse_tile_position.x <= Controller.tick_counter:
 				Controller.view_historical_tick(Controller.mouse_tile_position.x)
 				render.emit()
-			elif Controller.mouse_tile_position.x in range(Controller.ap_start_c, Controller.ap_start_c + 1) and Controller.tick_counter == Controller.tick_array.size() - 1:
-				if Controller.mouse_tile_position.y in range(Controller.ap_start_r+3, Controller.ap_start_r + 4):
+			elif Controller.mouse_tile_position.y == Controller.ap_start_r+3:
+				if Controller.mouse_tile_position.x == Controller.ap_start_c:
 					Controller.is_paused = false
 					render_background.emit()
-			elif Controller.mouse_tile_position.x in range(Controller.ap_start_c+1, Controller.ap_start_c + 2) and Controller.tick_counter == Controller.tick_array.size() - 1:
-				if Controller.mouse_tile_position.y in range(Controller.ap_start_r+3, Controller.ap_start_r + 4):
+				elif Controller.mouse_tile_position.x == Controller.ap_start_c+1:
 					Controller.is_paused = true
 					render_background.emit()
 			return
@@ -74,7 +73,6 @@ func load_array():
 	Controller.astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
 	Controller.astar_grid.update()
   
-	Controller.ap_start_c = Controller.board_length + 2
 	process_game_tick()
 
 func process_game_tick():
