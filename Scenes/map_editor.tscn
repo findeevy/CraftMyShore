@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://4i3sdp8o4ydt"]
+[gd_scene load_steps=13 format=3 uid="uid://dndyem0dvnksg"]
 
 [ext_resource type="Script" path="res://Scenes/map_editor.gd" id="1_fxcof"]
 [ext_resource type="Texture2D" uid="uid://k5j1o5vcqbu4" path="res://Textures/blockSheet.png" id="2_sj7rt"]
