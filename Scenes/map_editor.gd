@@ -51,37 +51,7 @@ func map_cycle():
 	render_background.emit()
 
 func load_array(file_name):
-	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
-	while f.get_position() < f.get_length():
-		var l = f.get_line()
-		var id = []
-		var td = []
-		for c in l:
-			match c:
-				"l":
-					id.append(1)
-					td.append(0)
-				"c":
-					id.append(2)
-					td.append(2)
-				"w":
-					id.append(0)
-					td.append(0)
-				"v":
-					id.append(4)
-					td.append(4)
-				"t":
-					id.append(3)
-					td.append(1)
-		Controller.init_array.append(id)
-		Controller.tile_array.append(td)
-	Controller.board_length = Controller.init_array[0].size()
-	Controller.board_height = Controller.init_array.size()
-	Controller.water_array.resize(Controller.board_length)
-	Controller.water_array.fill(0)
-	Controller.wrs.resize(Controller.board_length)
-	Controller.wrs.fill([0,0])
-  
+	Controller.load_map(file_name)
 	Controller.ap_start_c = Controller.board_length + 2
 	process_game_tick()
 

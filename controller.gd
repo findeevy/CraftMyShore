@@ -281,6 +281,46 @@ func undo_move(move_index):
 						tile_array[mov[2].y][mov[2].x] |= mov[4]
 		pathfind_update_flag = 0
 
+func load_map(file_name):
+	var f = FileAccess.open("res://" + file_name, FileAccess.READ)
+	while f.get_position() < f.get_length():
+		var l = f.get_line()
+		if l.length() > 4 and l.substr(0, 4) == "pdf:":
+			pdf = []
+			for v in l.substr(4).split(","):
+				var n = v.strip_edges().to_int()
+				pdf.append(n)
+				pdf_sum += n
+		elif l.length() > 4 and l.substr(0, 4) == "gea:":
+			tick_array = []
+			for v in l.substr(4).split(","):
+				var n = v.strip_edges().to_int()
+				tick_array.append(n)
+		else:
+			var id = []
+			var td = []
+			for c in l:
+				match c:
+					"l":
+						id.append(1)
+						td.append(0)
+					"c":
+						id.append(2)
+						td.append(2)
+					"w":
+						id.append(0)
+						td.append(0)
+					"v":
+						id.append(4)
+						td.append(4)
+					"t":
+						id.append(3)
+						td.append(1)
+			init_array.append(id)
+			tile_array.append(td)
+	board_length = init_array[0].size()
+	board_height = init_array.size()
+
 func fill_ap_craft_indicator():
 	if game_ended:
 		return
