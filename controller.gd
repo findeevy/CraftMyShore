@@ -3,6 +3,9 @@ extends Node
 var init_array = []
 var tile_array = []
 
+var pdf = null
+var pdf_sum = 0
+
 var astar_grid = AStarGrid2D.new()
 var pathfind_update_flag = 0
 var path = null
@@ -65,9 +68,16 @@ func calculate_water_reach(col):
 	return [reach, high_reach]
 
 func get_flood_column():
-	if board_length == 11:
-		return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2
-	return rng.randi_range(0, board_length - 1)
+	if pdf == null:
+		if board_length == 11:
+			return rng.randi_range(1, 6) + rng.randi_range(1, 6) - 2
+		return rng.randi_range(0, board_length - 1)
+	else:
+		var x = rng.randi_range(1, pdf_sum)
+		for i in pdf.size():
+			if pdf[i] >= x:
+				return i
+			x -= pdf[i]
 
 func count_surviving_cities():
 	var city_count = 0
