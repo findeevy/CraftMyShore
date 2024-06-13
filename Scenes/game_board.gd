@@ -36,7 +36,7 @@ func _input(event):
 				elif Controller.mouse_tile_position.x == Controller.ap_start_c+2:
 					var img = self.get_viewport().get_texture().get_image()
 					img.save_png("user://screenshot.png")
-					Download_File(img, "win")
+					download_file(img, "win")
 					
 			return
 		if Controller.waters_to_break != []:
