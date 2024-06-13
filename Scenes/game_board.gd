@@ -34,6 +34,10 @@ func _input(event):
 					render_background.emit()
 				elif Controller.mouse_tile_position.x==Controller.ap_start_c-1:
 					get_tree().change_scene_to_file("res://main_menu.tscn")
+				elif Controller.mouse_tile_position.x == Controller.ap_start_c+2:
+					var img = self.get_viewport().get_texture().get_image()
+					img.save_png("res://screenshot.png")
+					
 			return
 		if Controller.waters_to_break != []:
 			for w in Controller.waters_to_break:
