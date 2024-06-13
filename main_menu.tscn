@@ -41,10 +41,10 @@ theme_override_font_sizes/font_size = 32
 script = ExtResource("5_wd71o")
 
 [node name="MapButton" type="Button" parent="."]
-offset_left = 479.0
-offset_top = 503.0
-offset_right = 635.0
-offset_bottom = 551.0
+offset_left = 149.0
+offset_top = -71.0
+offset_right = 305.0
+offset_bottom = -23.0
 theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
 text = "MAP EDITOR"
