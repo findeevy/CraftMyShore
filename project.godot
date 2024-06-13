@@ -19,6 +19,7 @@ config/icon="res://logo.png"
 
 Controller="*res://controller.gd"
 Colors="*res://colors.gd"
+AutoWebMap="*res://auto_web_map.gd"
 
 [display]
 

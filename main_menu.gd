@@ -4,6 +4,7 @@ extends Node2D
 var opts = []
 
 func _ready():
+	Controller.platform_type=OS.get_name()
 	var map_dir = DirAccess.open("res://Maps/")
 	for f in map_dir.get_files():
 		print(f)

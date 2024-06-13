@@ -4,6 +4,8 @@ var file_name = "map.dat"
 var init_array = []
 var tile_array = []
 
+var platform_type = "unknown"
+
 var pdf = null
 var pdf_sum = 0
 
@@ -289,13 +291,19 @@ func undo_move(move_index):
 
 
 func load_map():
+	
+	var web_load = false
 	var fn = file_name if file_name.length() > 6 and file_name.substr(0,6) == "res://" else "res://Maps/" + file_name
-	var f = FileAccess.open(fn, FileAccess.READ)
+	var f = FileAccess.open(fn, FileAccess.READ) if not web_load else null
+	var mstring = AutoWebMap.map_a if web_load else null
 	tile_array = []
 	init_array = []
 	tick_array = tick_array_default.duplicate()
-	while f.get_position() < f.get_length():
-		var l = f.get_line()
+	var lines = mstring.split("\n")
+	var i = 0
+	while f.get_position() < f.get_length() if not web_load else lines.size() > i:
+		var l = f.get_line() if not web_load else lines[i]
+		i += 1
 		if l.length() > 4 and l.substr(0, 4) == "pdf:":
 			pdf = []
 			pdf_sum = 0
