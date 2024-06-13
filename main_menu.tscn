@@ -22,29 +22,30 @@ volume_db = 6.559
 autoplay = true
 
 [node name="PlayButton" type="Button" parent="."]
-offset_left = 400.0
-offset_top = 442.0
-offset_right = 552.0
-offset_bottom = 490.0
+offset_left = 475.0
+offset_top = 438.0
+offset_right = 627.0
+offset_bottom = 486.0
 theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
 text = "START GAME"
 
 [node name="MapOptionButton" type="OptionButton" parent="."]
-offset_left = 570.0
-offset_top = 441.0
-offset_right = 712.0
-offset_bottom = 490.0
+offset_left = 424.0
+offset_top = 502.0
+offset_right = 683.0
+offset_bottom = 551.0
 tooltip_text = "MAP"
 theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
 script = ExtResource("5_wd71o")
 
 [node name="MapButton" type="Button" parent="."]
-offset_left = 479.0
-offset_top = 503.0
-offset_right = 635.0
-offset_bottom = 551.0
+offset_left = -82.0
+offset_top = -92.0
+offset_right = 74.0
+offset_bottom = -44.0
+scale = Vector2(-27.7252, 66.9945)
 theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
 text = "MAP EDITOR"
