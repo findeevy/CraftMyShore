@@ -29,3 +29,5 @@ mono_crash.*.json
 previousGame.dat
 previousGame.dat
 *.dat
+
+screenshot.png*
