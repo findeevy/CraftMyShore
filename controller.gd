@@ -137,6 +137,12 @@ func update_pathfinding_grid(s, by):
 			var max_reach = max(wrs[c][0], wrs[c][1]) - 1
 			for r in board_height:
 				if s != Vector2i(c, r) and not (max_reach < r and init_array[r][c] > 0 and tile_array[r][c] & by == 0):
+					var skip = false
+					for m in cur_moves:
+						if m[4] == by and m[3] == s and m[2] == Vector2i(c,r):
+							skip = true # i miss gotos
+					if skip:
+						continue
 					#print("impassable at ",r,", ",c)
 					astar_grid.set_point_solid(Vector2i(c,r), true)
 					#print(astar_grid.is_point_solid(Vector2i(c,r)))
@@ -294,11 +300,10 @@ func undo_move(move_index):
 
 
 func load_map():
-	
 	var web_load = false
 	var fn = file_name if file_name.length() > 6 and file_name.substr(0,6) == "res://" else "res://Maps/" + file_name
 	var f = FileAccess.open(fn, FileAccess.READ) if not web_load else null
-	var mstring = AutoWebMap.map_a if web_load else null
+	var mstring = AutoWebMap.map_a if web_load else ""
 	tile_array = []
 	init_array = []
 	tick_array = tick_array_default.duplicate()
@@ -347,6 +352,13 @@ func load_map():
 	ap_start_r = 0 if board_height <= 8 else 1
 	tick_start_r = max(board_height, ap_start_r + 8)
 	tick_counter = -1
+	game_ended = false
+	is_paused = false
+	terrain_moved = 0
+	cities_moved = 0
+	trees_moved = 0
+	trees_planted = 0
+
 	get_window().size = Vector2i(max(board_length + 6, tick_array.size()), tick_start_r + 1) * Colors.TILE_SIZE
 
 func fill_ap_craft_indicator():
