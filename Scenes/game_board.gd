@@ -18,9 +18,6 @@ func _ready():
 
 func _process(delta):
 	pass
-func Download_File(_img,_filename):
-	var buf = _img.save_png_to_buffer()
-	JavaScriptBridge.download_buffer(buf,_filename+".png")
 func _input(event):
 	if Input.is_action_just_pressed("Click"):
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
@@ -132,6 +129,10 @@ func create_wave():
 	check_grass_absorb(col)
 	check_destroy_city(col)
 
+func download_file(_img,_filename):
+	var buf = _img.save_png_to_buffer()
+	JavaScriptBridge.download_buffer(buf,_filename+".png")
+	
 func try_spawn_plants():
 	for r in Controller.board_height:
 		for c in Controller.board_length:
