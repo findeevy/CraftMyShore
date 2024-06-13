@@ -302,15 +302,13 @@ func undo_move(move_index):
 func load_map():
 	var web_load = false
 	var fn = file_name if file_name.length() > 6 and file_name.substr(0,6) == "res://" else "res://Maps/" + file_name
-	var f = FileAccess.open(fn, FileAccess.READ) if not web_load else null
-	var mstring = AutoWebMap.map_a if web_load else ""
+	var f = FileAccess.open(fn, FileAccess.READ)
 	tile_array = []
 	init_array = []
 	tick_array = tick_array_default.duplicate()
-	var lines = mstring.split("\n")
 	var i = 0
-	while f.get_position() < f.get_length() if not web_load else lines.size() > i:
-		var l = f.get_line() if not web_load else lines[i]
+	while f.get_position() < f.get_length():
+		var l = f.get_line()
 		i += 1
 		if l.length() > 4 and l.substr(0, 4) == "pdf:":
 			pdf = []
