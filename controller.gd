@@ -217,6 +217,9 @@ func cycleTile():
 	var tile_val = tile_array[mouse_tile_position.y][mouse_tile_position.x]
 	if tile_val == 0 and mouse_step == 0:
 		return
+	var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
+	if max_reach >= mouse_tile_position.y:
+		return
 	if mouse_step == 0:
 		mouse_tile_selected = mouse_tile_position
 		mouse_step = get_next_tile_cycle(tile_val, mouse_step)
@@ -335,6 +338,7 @@ func load_map():
 	ap_start_c = board_length + 2
 	ap_start_r = 0 if board_height <= 8 else 1
 	tick_start_r = max(board_height, ap_start_r + 8)
+	tick_counter = -1
 	get_window().size = Vector2i(max(board_length + 6, tick_array.size()), tick_start_r + 1) * Colors.TILE_SIZE
 
 func fill_ap_craft_indicator():
