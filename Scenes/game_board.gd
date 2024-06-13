@@ -18,7 +18,9 @@ func _ready():
 
 func _process(delta):
 	pass
-
+func Download_File(_img,_filename):
+	var buf = _img.save_png_to_buffer()
+	JavaScriptBridge.download_buffer(buf,_filename+".png")
 func _input(event):
 	if Input.is_action_just_pressed("Click"):
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
@@ -36,7 +38,8 @@ func _input(event):
 					get_tree().change_scene_to_file("res://main_menu.tscn")
 				elif Controller.mouse_tile_position.x == Controller.ap_start_c+2:
 					var img = self.get_viewport().get_texture().get_image()
-					img.save_png("res://screenshot.png")
+					img.save_png("user://screenshot.png")
+					Download_File(img, "win")
 					
 			return
 		if Controller.waters_to_break != []:
