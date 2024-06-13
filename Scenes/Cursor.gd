@@ -11,11 +11,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Controller.mouse_tile_hover.x >= Controller.board_length or Controller.mouse_tile_hover.y >= Controller.board_height:
+	var mth = Controller.mouse_tile_hover
+	if mth.x >= Controller.board_length or mth.y >= Controller.board_height:
 		position = get_global_mouse_position()
 		visible = false
 	else:
-		position = Controller.mouse_tile_hover * Colors.TILE_SIZE
+		position = mth * Colors.TILE_SIZE
 		visible = true
 		var ap_cost_info = Controller.get_hover_ap_cost()
 		var ap_cost = ap_cost_info[0]
@@ -40,7 +41,7 @@ func _process(delta):
 				"l":
 					modulate = Colors.NONE
 		else:
-			match Controller.tile_array[Controller.mouse_tile_hover.y][Controller.mouse_tile_hover.x]:
+			match Controller.tile_array[mth.y][mth.x]:
 				4:
 					modulate = Colors.PLANT
 				2:
