@@ -216,6 +216,7 @@ func _on_game_board_render_background():
 		set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+2), 0, Vector2i(1, 1))
 
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
+			set_cell(0, Vector2i(Controller.ap_start_c-1, Controller.ap_start_r+3), 0,  Vector2i(0,27))
 			if Controller.is_paused:
 				set_cell(0, Vector2i(Controller.ap_start_c, Controller.ap_start_r+3), 0, Vector2i(0, 25))
 				set_cell(0, Vector2i(Controller.ap_start_c+1, Controller.ap_start_r+3), 0, Vector2i(1, 26))

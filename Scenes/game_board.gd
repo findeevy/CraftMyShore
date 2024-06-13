@@ -32,6 +32,8 @@ func _input(event):
 				elif Controller.mouse_tile_position.x == Controller.ap_start_c+1:
 					Controller.is_paused = true
 					render_background.emit()
+				elif Controller.mouse_tile_position.x==Controller.ap_start_c-1:
+					get_tree().change_scene_to_file("res://main_menu.tscn")
 			return
 		if Controller.waters_to_break != []:
 			for w in Controller.waters_to_break:
@@ -144,7 +146,7 @@ func try_spawn_plants():
 
 func check_grass_absorb(col): # this just checks if extant, unmoved grass absorbs a single new water tile; grass tile movement should go somewhere else
 	var max_reach = max(Controller.wrs[col][0], Controller.wrs[col][1]) - 1
-	if max_reach < 0:
+	if max_reach < 0 or max_reach >= Controller.board_height:
 		return
 	var pos = null
 	if max_reach + 1 < Controller.board_height and Controller.tile_array[max_reach+1][col] & 4 > 0:
@@ -164,7 +166,7 @@ func check_grass_absorb(col): # this just checks if extant, unmoved grass absorb
 
 func check_destroy_city(col):
 	var max_reach = max(Controller.wrs[col][0], Controller.wrs[col][1]) - 1
-	if max_reach < 0:
+	if max_reach < 0 or max_reach >= Controller.board_height:
 		return
 	if Controller.tile_array[max_reach][col] & 2 > 0:
 		Controller.tile_array[max_reach][col] &= ~2
