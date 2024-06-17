@@ -93,13 +93,27 @@ texture_region_size = Vector2i(64, 64)
 tile_size = Vector2i(64, 64)
 sources/0 = SubResource("TileSetAtlasSource_qsj6d")
 
-[node name="map_editor" type="Node2D"]
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="map_editor" type="Node2D" parent="."]
 script = ExtResource("1_fxcof")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="map_editor"]
 anchor_mode = 0
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMap" parent="map_editor"]
 tile_set = SubResource("TileSet_ylqfh")
 rendering_quadrant_size = 12
 format = 2
@@ -112,7 +126,7 @@ layer_4/z_index = 10
 layer_4/tile_data = PackedInt32Array()
 script = ExtResource("3_l3rwt")
 
-[node name="TileMap2" type="TileMap" parent="."]
+[node name="TileMap2" type="TileMap" parent="map_editor"]
 position = Vector2(0, 12)
 tile_set = SubResource("TileSet_ylqfh")
 rendering_quadrant_size = 12
@@ -120,7 +134,7 @@ format = 2
 layer_0/z_index = 2
 script = ExtResource("3_l3rwt")
 
-[node name="TileMap3" type="TileMap" parent="."]
+[node name="TileMap3" type="TileMap" parent="map_editor"]
 position = Vector2(0, 24)
 tile_set = SubResource("TileSet_ylqfh")
 rendering_quadrant_size = 12
@@ -128,25 +142,25 @@ format = 2
 layer_0/z_index = 1
 script = ExtResource("3_l3rwt")
 
-[node name="Cursor" type="Sprite2D" parent="."]
+[node name="Cursor" type="Sprite2D" parent="map_editor"]
 position = Vector2(1.84241, 3.30222)
 texture = ExtResource("4_g0qf4")
 centered = false
 vframes = 8
 script = ExtResource("5_okikm")
 
-[node name="Selected" type="Sprite2D" parent="."]
+[node name="Selected" type="Sprite2D" parent="map_editor"]
 texture = ExtResource("4_g0qf4")
 centered = false
 vframes = 8
 script = ExtResource("6_ekiet")
 
-[node name="InstructionBackground" type="Sprite2D" parent="."]
+[node name="InstructionBackground" type="Sprite2D" parent="map_editor"]
 position = Vector2(704, 320)
 texture = ExtResource("7_uwm8e")
 centered = false
 
-[node name="Label" type="Label" parent="InstructionBackground"]
+[node name="Label" type="Label" parent="map_editor/InstructionBackground"]
 offset_left = 8.0
 offset_top = 4.0
 offset_right = 375.0
@@ -161,15 +175,15 @@ LEFT CLICK: SELECT
 RIGHT CLICK DESELECT
 -------------------------------"
 
-[node name="AudioListener2D" type="AudioListener2D" parent="."]
+[node name="AudioListener2D" type="AudioListener2D" parent="map_editor"]
 
-[node name="Click" type="AudioStreamPlayer" parent="AudioListener2D"]
+[node name="Click" type="AudioStreamPlayer" parent="map_editor/AudioListener2D"]
 process_mode = 3
 stream = ExtResource("18_xysre")
 volume_db = 6.559
 script = ExtResource("19_6ckpd")
 
-[node name="FileDialog" type="FileDialog" parent="."]
+[node name="FileDialog" type="FileDialog" parent="map_editor"]
 size = Vector2i(400, 350)
 popup_window = true
 dialog_hide_on_ok = true
@@ -177,7 +191,7 @@ access = 2
 filters = PackedStringArray("")
 script = ExtResource("11_vk7at")
 
-[node name="LoadDialog" type="FileDialog" parent="."]
+[node name="LoadDialog" type="FileDialog" parent="map_editor"]
 title = "Open a File"
 size = Vector2i(500, 500)
 ok_button_text = "Open"
@@ -185,12 +199,12 @@ file_mode = 0
 access = 2
 script = ExtResource("12_mwqtl")
 
-[connection signal="load_map_file" from="." to="LoadDialog" method="_on_map_editor_load_map_file"]
-[connection signal="render" from="." to="TileMap" method="_on_game_board_render"]
-[connection signal="render" from="." to="TileMap2" method="_on_game_board_render"]
-[connection signal="render" from="." to="TileMap3" method="_on_game_board_render"]
-[connection signal="render_background" from="." to="TileMap" method="_on_game_board_render_background"]
-[connection signal="save_map_file" from="." to="FileDialog" method="_on_map_editor_save_map_file"]
-[connection signal="file_selected" from="FileDialog" to="FileDialog" method="_on_file_selected"]
-[connection signal="file_selected" from="LoadDialog" to="LoadDialog" method="_on_file_selected"]
-[connection signal="finalize_load" from="LoadDialog" to="." method="_on_load_dialog_finalize_load"]
+[connection signal="load_map_file" from="map_editor" to="map_editor/LoadDialog" method="_on_map_editor_load_map_file"]
+[connection signal="render" from="map_editor" to="map_editor/TileMap" method="_on_game_board_render"]
+[connection signal="render" from="map_editor" to="map_editor/TileMap2" method="_on_game_board_render"]
+[connection signal="render" from="map_editor" to="map_editor/TileMap3" method="_on_game_board_render"]
+[connection signal="render_background" from="map_editor" to="map_editor/TileMap" method="_on_game_board_render_background"]
+[connection signal="save_map_file" from="map_editor" to="map_editor/FileDialog" method="_on_map_editor_save_map_file"]
+[connection signal="file_selected" from="map_editor/FileDialog" to="map_editor/FileDialog" method="_on_file_selected"]
+[connection signal="file_selected" from="map_editor/LoadDialog" to="map_editor/LoadDialog" method="_on_file_selected"]
+[connection signal="finalize_load" from="map_editor/LoadDialog" to="map_editor" method="_on_load_dialog_finalize_load"]

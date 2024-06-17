@@ -25,6 +25,7 @@ AutoWebMap="*res://auto_web_map.gd"
 
 window/size/viewport_width=1088
 window/size/viewport_height=640
+window/size/resizable=false
 
 [dotnet]
 

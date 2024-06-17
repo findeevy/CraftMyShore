@@ -26,6 +26,7 @@ func _ready():
 func _process(delta):
 	if offset == 0:
 		var mouse_position = get_global_mouse_position()
+		mouse_position -= position
 		Controller.mouse_tile_hover = local_to_map(mouse_position)
 		if get_tree().current_scene.name == "map_editor":
 			render_inventory()
@@ -233,6 +234,7 @@ func _on_game_board_render_background():
 func _input(event):
 	if Input.is_action_just_pressed("Click") and offset==0:
 		var mouse_position = get_global_mouse_position()
+		mouse_position -= position
 		Controller.mouse_tile_position = local_to_map(mouse_position)
 
 
