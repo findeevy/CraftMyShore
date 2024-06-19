@@ -13,6 +13,8 @@ var export_string = ""
 var loaded_file = ""
 
 var astar_grid = AStarGrid2D.new()
+var astar_mutex: Mutex
+var pathfind_se = null
 var pathfind_update_flag = 0
 var path = null
 
@@ -53,6 +55,7 @@ var ap = 6
 var cur_moves = []
 var hover_move = null
 var ap_craft_indicator = [null, null, null, null, null, null]
+var ap_craft_render_update = false
 
 var waters_to_break = []
 var pending_broken_waters = []
@@ -134,7 +137,9 @@ func get_hover_ap_cost():
 	return Vector2i(dist * move_cost, 0)
 
 func update_pathfinding_grid(s, by):
+	astar_mutex.lock()
 	if pathfind_update_flag != by:
+		#print(pathfind_update_flag)
 		astar_grid.fill_solid_region(astar_grid.region, false)
 		for c in board_length:
 			var max_reach = max(wrs[c][0], wrs[c][1]) - 1
@@ -146,14 +151,18 @@ func update_pathfinding_grid(s, by):
 							skip = true # i miss gotos
 					if skip:
 						continue
-					#print("impassable at ",r,", ",c)
 					astar_grid.set_point_solid(Vector2i(c,r), true)
-					#print(astar_grid.is_point_solid(Vector2i(c,r)))
 		pathfind_update_flag = by
+	astar_mutex.unlock()
 
 func calculate_move_distance(s, e, by):
 	update_pathfinding_grid(s, by)
-	path = astar_grid.get_id_path(s, e)
+	astar_mutex.lock()
+	if pathfind_se == null or pathfind_se != Vector4(s.x, s.y, e.x, e.y):
+		#print(pathfind_se)
+		path = astar_grid.get_id_path(s, e)
+		pathfind_se = Vector4(s.x, s.y, e.x, e.y)
+	astar_mutex.unlock()
 	return path.size() - 1
 
 func try_do_move():
@@ -365,6 +374,7 @@ func load_map():
 func fill_ap_craft_indicator():
 	if game_ended:
 		return
+	var old_ap_craft = ap_craft_indicator.duplicate(true)
 	ap_craft_indicator.fill(null)
 	var local_moves = range(cur_moves.size())
 	var ap_cost_info = Controller.get_hover_ap_cost()
@@ -413,3 +423,11 @@ func fill_ap_craft_indicator():
 							if ap_craft_indicator[c + 2 * r] == null and not filled:
 								ap_craft_indicator[c + 2 * r] = [1, i]
 								filled = true
+			var num:
+				for j in num:
+					ap_craft_indicator[j] = [num, i]
+	for i in ap_craft_indicator.size():
+		if ap_craft_indicator[i] == null and old_ap_craft[i] == null:
+			continue
+		if ap_craft_indicator[i] == null or old_ap_craft[i] == null or ap_craft_indicator[i][0] != old_ap_craft[i][0] or ap_craft_indicator[i][1] != old_ap_craft[i][1]:
+			ap_craft_render_update = true

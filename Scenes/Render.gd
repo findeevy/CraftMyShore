@@ -22,6 +22,26 @@ func _ready():
 		"TileMap3":
 			offset = 2
 
+func _use_tile_data_runtime_update(layer, coords):
+	return layer == 4 and coords.x in range(Controller.ap_start_c, Controller.ap_start_c + 2) and coords.y in range(Controller.ap_start_r, Controller.ap_start_r + 4)
+
+func _tile_data_runtime_update(layer, coords, tile_data):
+	var ap_x = coords.x - Controller.ap_start_c
+	var ap_y = coords.y - Controller.ap_start_r
+	print(layer, "-- ", ap_x, ", ", ap_y)
+	if Controller.ap_craft_indicator[ap_x + 2 * ap_y]:
+		var i = Controller.ap_craft_indicator[ap_x + 2 * ap_y][1]
+		var val = Controller.hover_move if i == -1 else Controller.temp_water_break_move if i == -2 else Controller.cur_moves[i]
+		match val[4]:
+			4:
+				tile_data.modulate = Colors.PLANT
+			2:
+				tile_data.modulate = Colors.CITY
+			1:
+				tile_data.modulate = Colors.HILL
+			_:
+				return
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if offset == 0:
@@ -86,24 +106,35 @@ func render_inventory():
 	
 func render_ap_crafter():
 	Controller.fill_ap_craft_indicator()
+	if not Controller.ap_craft_render_update:
+		return
 	clear_layer(4)
 	for i in Controller.ap_craft_indicator.size():
 		if Controller.ap_craft_indicator[i] == null:
 			continue
-		var blink = 4 if Controller.ap_craft_indicator[i][1] < 0 else 0
+		var blink = 12 if Controller.ap_craft_indicator[i][1] < 0 else 0
+		var pos = Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2)
 		match Controller.ap_craft_indicator[i][0]:
+			6:
+				set_cell(4, pos, 0, Vector2i(3 + i % 2, 9 + i / 2 + blink))
+			5:
+				set_cell(4, pos, 0, Vector2i(3 + i % 2, 6 + i / 2 + blink))
+			4:
+				set_cell(4, pos, 0, Vector2i(3 + i % 2, 4 + i / 2 + blink))
 			3:
-				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(0, 11 + i / 2 + blink))
+				set_cell(4, pos, 0, Vector2i(3, 1 + i / 2 + blink))
 			2 when i < 4:
-				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 11 + i / 2 + blink))
+				set_cell(4, pos, 0, Vector2i(4, 1 + i / 2 + blink))
 			2:
-				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(i % 2, 10 + blink))
+				set_cell(4, pos, 0, Vector2i(3 + i % 2, 0 + blink))
 			1:
-				set_cell(4, Vector2i(Controller.ap_start_c + i % 2, Controller.ap_start_r + i / 2), 0, Vector2i(1, 13 + blink))
+				set_cell(4, pos, 0, Vector2i(4, 3 + blink))
+	notify_runtime_tile_data_update(4)
+	Controller.ap_craft_render_update = false
 	if Controller.path != null and Controller.path.size() > 1 and Controller.mouse_step > 0:
 		for pi in Controller.path.size():
 			set_cell(4, Controller.path[pi], 0, Vector2i(2, get_path_neighbors(Controller.path, pi)))
-	notify_runtime_tile_data_update(4)
+	
 
 func render_tree_waterlogged(r, c):
 	return Vector2i(1, 8) if not Controller.game_ended and Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)

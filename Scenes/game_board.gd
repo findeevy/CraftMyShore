@@ -12,6 +12,7 @@ signal tree_move
 @onready var tree_flooder = preload("res://tree_animated_sprite.tscn")
 
 func _ready():
+	Controller.astar_mutex = Mutex.new()
 	load_array()
 	render.emit()
 	render_background.emit()
@@ -72,12 +73,14 @@ func load_array():
 	Controller.water_array.fill(0)
 	Controller.wrs.resize(Controller.board_length)
 	Controller.wrs.fill([0,0])
-  
+ 
+	Controller.astar_mutex.lock()
 	Controller.astar_grid.region = Rect2i(0, 0, Controller.board_length, Controller.board_height)
 	Controller.astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	Controller.astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
 	Controller.astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
 	Controller.astar_grid.update()
+	Controller.astar_mutex.unlock()
   
 	process_game_tick()
 
