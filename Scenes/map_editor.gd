@@ -55,7 +55,8 @@ func _input(event):
 			render_background.emit()
 
 func load_map():
-	load_map_file.emit()
+	#load_map_file.emit()
+	JavaScriptBridge.eval("var input=document.createElement('input'); input.setAttribute('type', 'file'); input.setAttribute('id', 'fileForUpload'); input.setAttribute('accept', '.dat'); (input).click();", true)
 
 func save_map():
 	Controller.export_string=""
@@ -81,7 +82,7 @@ func save_map():
 		else:
 			Controller.export_string+=str(k)
 	Controller.export_string+=("\n")
-	Controller.download_file(Controller.export_string,"map.dat",true)
+	Controller.download_file(Controller.export_string.to_utf8_buffer ( ),"map.dat",false)
 
 func map_cycle():
 	match Controller.selected_tile:

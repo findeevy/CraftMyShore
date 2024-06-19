@@ -368,6 +368,13 @@ func download_file(_img,_filename,is_image):
 		buf = _img.save_png_to_buffer()
 	JavaScriptBridge.download_buffer(buf,_filename)
 
+func load_file(_img,_filename,is_image):
+	JavaScriptBridge.eval("let file = input.files[0]; reader.readAsText(file); reader.readAsText(file);")
+	var buf = _img
+	if is_image:
+		buf = _img.save_png_to_buffer()
+	JavaScriptBridge.download_buffer(buf,_filename)
+
 func fill_ap_craft_indicator():
 	if game_ended:
 		return
