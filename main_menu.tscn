@@ -30,6 +30,15 @@ theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
 text = "START GAME"
 
+[node name="MapButton" type="Button" parent="."]
+offset_left = -168.0
+offset_top = -57.0
+offset_right = -12.0
+offset_bottom = -9.0
+theme_override_fonts/font = ExtResource("2_u5cna")
+theme_override_font_sizes/font_size = 32
+text = "MAP EDITOR"
+
 [node name="MapOptionButton" type="OptionButton" parent="."]
 offset_left = 424.0
 offset_top = 502.0
@@ -39,16 +48,6 @@ tooltip_text = "MAP"
 theme_override_fonts/font = ExtResource("2_u5cna")
 theme_override_font_sizes/font_size = 32
 script = ExtResource("5_wd71o")
-
-[node name="MapButton" type="Button" parent="."]
-offset_left = -82.0
-offset_top = -92.0
-offset_right = 74.0
-offset_bottom = -44.0
-scale = Vector2(-27.7252, 66.9945)
-theme_override_fonts/font = ExtResource("2_u5cna")
-theme_override_font_sizes/font_size = 32
-text = "MAP EDITOR"
 
 [node name="Label" type="Label" parent="."]
 offset_left = 45.0

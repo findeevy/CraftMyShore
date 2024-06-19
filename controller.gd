@@ -117,7 +117,7 @@ func view_historical_tick(tick):
 	ap_craft_indicator = historical_game_states[tick][2]
 
 func get_move_cost(mouse_step):
-	return 1 if mouse_step == 4 else 2 if mouse_step == 1 else 4
+	return 1 if mouse_step == 4 else 2 if mouse_step == 1 else 6
 
 func get_hover_ap_cost():
 	if mouse_step == 0 or mouse_tile_hover.x >= board_length or mouse_tile_hover.y >= board_height:
@@ -361,6 +361,12 @@ func load_map():
 	trees_planted = 0
 
 	get_window().size = Vector2i(max(board_length + 6, tick_array.size()), tick_start_r + 1) * Colors.TILE_SIZE
+
+func download_file(_img,_filename,is_image):
+	var buf = _img
+	if is_image:
+		buf = _img.save_png_to_buffer()
+	JavaScriptBridge.download_buffer(buf,_filename)
 
 func fill_ap_craft_indicator():
 	if game_ended:

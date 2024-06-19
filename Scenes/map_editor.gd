@@ -9,7 +9,7 @@ signal load_map_file
 @onready var tree_flooder = preload("res://tree_animated_sprite.tscn")
 
 func _ready():
-	load_array("map.dat")
+	load_array("easy_bay.dat")
 	render.emit()
 	render_background.emit()
 
@@ -81,7 +81,7 @@ func save_map():
 		else:
 			Controller.export_string+=str(k)
 	Controller.export_string+=("\n")
-	save_map_file.emit()
+	Controller.download_file(Controller.export_string,"map.dat",true)
 
 func map_cycle():
 	match Controller.selected_tile:

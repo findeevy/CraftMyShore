@@ -36,7 +36,7 @@ func _input(event):
 				elif Controller.mouse_tile_position.x == Controller.ap_start_c+2:
 					var img = self.get_viewport().get_texture().get_image()
 					img.save_png("user://screenshot.png")
-					download_file(img, "win")
+					Controller.download_file(img, "win", true)
 					
 			return
 		if Controller.waters_to_break != []:
@@ -129,9 +129,7 @@ func create_wave():
 	check_grass_absorb(col)
 	check_destroy_city(col)
 
-func download_file(_img,_filename):
-	var buf = _img.save_png_to_buffer()
-	JavaScriptBridge.download_buffer(buf,_filename+".png")
+
 	
 func try_spawn_plants():
 	for r in Controller.board_height:
