@@ -116,11 +116,14 @@ func view_historical_tick(tick):
 	wrs = historical_game_states[tick][1]
 	ap_craft_indicator = historical_game_states[tick][2]
 
+func get_move_cost(mouse_step):
+	return 1 if mouse_step == 4 else 2 if mouse_step == 1 else 4
+
 func get_hover_ap_cost():
 	if mouse_step == 0 or mouse_tile_hover.x >= board_length or mouse_tile_hover.y >= board_height:
 		hover_move = null
 		return Vector2i(0, 0)
-	var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
+	var move_cost = get_move_cost(mouse_step)
 	for c in cur_moves:
 		if c[2] == mouse_tile_selected and c[4] == mouse_step:
 			var dist = calculate_move_distance(c[3], mouse_tile_hover, mouse_step)
@@ -158,7 +161,7 @@ func try_do_move():
 	var max_reach = max(wrs[mouse_tile_position.x][0], wrs[mouse_tile_position.x][1]) - 1
 	if max_reach < mouse_tile_position.y:
 		var dist = calculate_move_distance(mouse_tile_selected, mouse_tile_position, mouse_step)
-		var move_cost = 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
+		var move_cost = get_move_cost(mouse_step)
 
 		for i in cur_moves.size():
 			if cur_moves[i][2] == mouse_tile_selected and cur_moves[i][4] == mouse_step:
