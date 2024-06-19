@@ -56,8 +56,8 @@ func _input(event):
 
 func load_map():
 	#load_map_file.emit()
-	JavaScriptBridge.eval("var input=document.createElement('input'); input.setAttribute('type', 'file'); input.setAttribute('id', 'fileForUpload'); input.setAttribute('accept', '.dat'); (input).click();", true)
-
+	JavaScriptBridge.eval("var input=document.createElement('input'); input.setAttribute('type', 'file'); input.setAttribute('id', 'fileForUpload'); input.setAttribute('accept', '.dat'); (input).click(); 
+input.addEventListener('input', event => { const file = event.target.files[0]; filename = file.name; var reader = new FileReader(); reader.readAsText(file); reader.onload = function(e) {return reader.result;})", true)
 func save_map():
 	Controller.export_string=""
 	for i in Controller.init_array:
