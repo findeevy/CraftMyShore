@@ -110,6 +110,7 @@ func load_array(file_name):
 	Controller.water_array.fill(0)
 	Controller.wrs.resize(Controller.board_length)
 	Controller.wrs.fill([0,0])
+	print(Controller.init_array)
 
 
 func _on_load_dialog_finalize_load():
