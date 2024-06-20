@@ -38,7 +38,6 @@ func _input(event):
 					var img = self.get_viewport().get_texture().get_image()
 					img.save_png("user://screenshot.png")
 					Controller.download_file(img, "win", true)
-					
 			return
 		if Controller.waters_to_break != []:
 			for w in Controller.waters_to_break:
@@ -88,7 +87,7 @@ func process_game_tick():
 	if not Controller.game_ended:
 		Controller.mouse_step = 0
 		Controller.fill_ap_craft_indicator()
-		Controller.historical_game_states.append([Controller.tile_array.duplicate(true), Controller.wrs.duplicate(true), Controller.ap_craft_indicator.duplicate(true)])
+		Controller.historical_game_states.append([Controller.tile_array.duplicate(true), Controller.wrs.duplicate(true), Controller.ap_craft_indicator.duplicate(true), Controller.cur_moves.duplicate(true)])
 		Controller.tick_counter += 1
 		print("flooding %d%s" % [abs(Controller.tick_array[Controller.tick_counter]), ", try spawning plants" if Controller.tick_array[Controller.tick_counter] < 0 else ""])
 		for i in abs(Controller.tick_array[Controller.tick_counter]):
@@ -118,6 +117,7 @@ func process_game_tick():
 			add_child(anim)
 		Controller.pending_broken_waters = []
 		Controller.ap_craft_indicator.fill(null)
+		Controller.ap_craft_render_update = true
 		if Controller.tick_counter == Controller.tick_array.size() - 1:
 			Controller.game_ended = true
 			Controller.historical_game_states.append([Controller.tile_array, Controller.wrs, Controller.ap_craft_indicator])
@@ -132,8 +132,6 @@ func create_wave():
 	check_grass_absorb(col)
 	check_destroy_city(col)
 
-
-	
 func try_spawn_plants():
 	for r in Controller.board_height:
 		for c in Controller.board_length:

@@ -151,6 +151,8 @@ layer_3/z_index = 5
 layer_3/tile_data = PackedInt32Array()
 layer_4/z_index = 10
 layer_4/tile_data = PackedInt32Array()
+layer_5/z_index = 10
+layer_5/tile_data = PackedInt32Array()
 script = ExtResource("3_kapad")
 
 [node name="TileMap2" type="TileMap" parent="."]

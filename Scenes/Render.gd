@@ -28,10 +28,13 @@ func _use_tile_data_runtime_update(layer, coords):
 func _tile_data_runtime_update(layer, coords, tile_data):
 	var ap_x = coords.x - Controller.ap_start_c
 	var ap_y = coords.y - Controller.ap_start_r
-	print(layer, "-- ", ap_x, ", ", ap_y)
+	#print(layer, "-- ", ap_x, ", ", ap_y)
 	if Controller.ap_craft_indicator[ap_x + 2 * ap_y]:
 		var i = Controller.ap_craft_indicator[ap_x + 2 * ap_y][1]
-		var val = Controller.hover_move if i == -1 else Controller.temp_water_break_move if i == -2 else Controller.cur_moves[i]
+		var val
+		if Controller.game_ended and i < 0:
+				return
+		val = Controller.hover_move if i == -1 else Controller.temp_water_break_move if i == -2 else Controller.cur_moves[i]
 		match val[4]:
 			4:
 				tile_data.modulate = Colors.PLANT
@@ -52,6 +55,11 @@ func _process(delta):
 			render_inventory()
 		else:
 			render_ap_crafter()
+			clear_layer(5)
+			if Controller.path != null and Controller.path.size() > 1 and Controller.mouse_step > 0:
+				for pi in Controller.path.size():
+					set_cell(5, Controller.path[pi], 0, Vector2i(2, get_path_neighbors(Controller.path, pi)))
+			notify_runtime_tile_data_update(5)
 
 func delta_to_neighbor_index(dp):
 	match dp:
@@ -131,10 +139,6 @@ func render_ap_crafter():
 				set_cell(4, pos, 0, Vector2i(4, 3 + blink))
 	notify_runtime_tile_data_update(4)
 	Controller.ap_craft_render_update = false
-	if Controller.path != null and Controller.path.size() > 1 and Controller.mouse_step > 0:
-		for pi in Controller.path.size():
-			set_cell(4, Controller.path[pi], 0, Vector2i(2, get_path_neighbors(Controller.path, pi)))
-	
 
 func render_tree_waterlogged(r, c):
 	return Vector2i(1, 8) if not Controller.game_ended and Controller.is_tile_watterlogged(r, c) else Vector2i(0, 1)

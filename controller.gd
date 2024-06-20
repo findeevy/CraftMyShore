@@ -118,6 +118,8 @@ func view_historical_tick(tick):
 	tile_array = historical_game_states[tick][0]
 	wrs = historical_game_states[tick][1]
 	ap_craft_indicator = historical_game_states[tick][2]
+	cur_moves = historical_game_states[tick][3]
+	ap_craft_render_update = true
 
 func get_move_cost(mouse_step):
 	return 1 if mouse_step == 4 else 2 if mouse_step == 1 else 6
