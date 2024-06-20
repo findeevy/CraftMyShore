@@ -55,9 +55,19 @@ func _input(event):
 			render_background.emit()
 
 func load_map():
-	#load_map_file.emit()
-	JavaScriptBridge.eval("var input=document.createElement('input'); input.setAttribute('type', 'file'); input.setAttribute('id', 'fileForUpload'); input.setAttribute('accept', '.dat'); (input).click(); 
-input.addEventListener('input', event => { const file = event.target.files[0]; filename = file.name; var reader = new FileReader(); reader.readAsText(file); reader.onload = function(e) {return reader.result;})", true)
+	var level = ""
+	while level == "":
+		level = str(JavaScriptBridge.eval("var export = '';var input=document.createElement('input'); input.setAttribute('type', 'file'); input.setAttribute('id', 'fileForUpload'); input.setAttribute('accept', '.dat'); (input).click(); 
+input.addEventListener('input', event => { const file = event.target.files[0]; filename = file.name; var reader = new FileReader(); reader.readAsText(file); reader.onload = function(e) { export=reader.result }}; export;)", false))
+		print(level)
+	if level != "":
+		level=str(level)
+		var file = FileAccess.open("user://custom.dat", FileAccess.WRITE)
+		file.store_string(level)
+		load_array("custom.dat")
+		render.emit()
+		render_background.emit()
+
 func save_map():
 	Controller.export_string=""
 	for i in Controller.init_array:
