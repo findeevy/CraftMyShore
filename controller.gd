@@ -122,7 +122,7 @@ func view_historical_tick(tick):
 	ap_craft_render_update = true
 
 func get_move_cost(mouse_step):
-	return 1 if mouse_step == 4 else 2 if mouse_step == 1 else 6
+	return 1 if mouse_step == 4 else 2 if mouse_step == 1 else 3
 
 func get_hover_ap_cost():
 	if mouse_step == 0 or mouse_tile_hover.x >= board_length or mouse_tile_hover.y >= board_height:
